@@ -14,6 +14,7 @@ import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import ErrorBoundary from "@/components/error-boundary";
 
 function Router() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -45,7 +46,9 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
+      <ErrorBoundary>
+        <Router />
+      </ErrorBoundary>
       <Toaster />
     </QueryClientProvider>
   );
