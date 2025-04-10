@@ -5,7 +5,7 @@ import {
   recipes, InsertRecipe, Recipe,
   brewingSchedules, InsertBrewingSchedule, BrewingSchedule
 } from "@shared/schema";
-import { IStorage } from "./storage";
+import { IStorage } from "./storage-interface";
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
