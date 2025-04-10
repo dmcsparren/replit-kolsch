@@ -12,7 +12,8 @@ import Recipes from "@/pages/recipes";
 import Reports from "@/pages/reports";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 function Router() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
