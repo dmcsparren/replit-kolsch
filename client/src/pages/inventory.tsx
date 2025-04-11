@@ -4,12 +4,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { InventoryItem } from "@shared/schema";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Plus, Trash } from "lucide-react";
+import { Pencil, Plus, ScanLine, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import BarcodeScanner from "@/components/inventory/barcode-scanner";
 import {
   Dialog,
   DialogContent,
@@ -123,12 +124,38 @@ export default function Inventory() {
     
     createInventoryMutation.mutate({
       ...newItem,
-      currentQuantity: parseFloat(newItem.currentQuantity),
-      minimumQuantity: parseFloat(newItem.minimumQuantity),
+      currentQuantity: newItem.currentQuantity,
+      minimumQuantity: newItem.minimumQuantity,
       status,
       forecast,
       lastUpdated: new Date(),
     });
+  };
+  
+  const handleBarcodeDetected = (data: { name?: string; category?: string; quantity?: string; unit?: string }) => {
+    // Open the add dialog and populate with scanned data
+    setNewItem({
+      ...newItem,
+      name: data.name || newItem.name,
+      category: data.category || newItem.category,
+      currentQuantity: data.quantity || newItem.currentQuantity,
+      unit: data.unit || newItem.unit
+    });
+    
+    // Open the dialog to let the user complete any missing information
+    setIsAddDialogOpen(true);
+    
+    toast({
+      title: "Barcode scanned",
+      description: `Detected: ${data.name || 'Unknown item'}`,
+    });
+  };
+  
+  // Convert string to number for calculations
+  const getNumericValue = (value: string | number | null | undefined): number => {
+    if (typeof value === 'number') return value;
+    if (!value) return 0;
+    return parseFloat(value.toString()) || 0;
   };
   
   // Define table columns
