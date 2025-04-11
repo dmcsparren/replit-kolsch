@@ -12,13 +12,6 @@ interface BarcodeData {
   unit?: string;
 }
 
-interface BarcodeData {
-  name?: string;
-  category?: string;
-  quantity?: string;
-  unit?: string;
-}
-
 interface BarcodeScannerProps {
   onBarcodeDetected: (data: BarcodeData) => void;
 }

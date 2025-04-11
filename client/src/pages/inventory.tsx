@@ -207,7 +207,9 @@ export default function Inventory() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
-        const percentage = Math.min(100, Math.max(5, Math.round((row.original.currentQuantity / row.original.minimumQuantity) * 50)));
+        const current = getNumericValue(row.original.currentQuantity);
+        const minimum = getNumericValue(row.original.minimumQuantity);
+        const percentage = Math.min(100, Math.max(5, Math.round((current / minimum) * 50)));
         
         const statusColor = status === "critical" ? "bg-red-500" : 
                             status === "warning" ? "bg-yellow-500" : "bg-green-500";
@@ -283,109 +285,112 @@ export default function Inventory() {
   }
   
   return (
-    <>
+    <div>
       <div className="flex justify-between mb-6">
         <h1 className="text-2xl font-bold">Inventory Management</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary-dark">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Item
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Inventory Item</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit}>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                    className="col-span-3"
-                    required
-                  />
+        <div className="flex space-x-2">
+          <BarcodeScanner onBarcodeDetected={handleBarcodeDetected} />
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-primary hover:bg-primary-dark">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Item
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Inventory Item</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      value={newItem.name}
+                      onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                      className="col-span-3"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="category" className="text-right">
+                      Category
+                    </Label>
+                    <Select
+                      value={newItem.category}
+                      onValueChange={(value) => setNewItem({ ...newItem, category: value })}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Hops">Hops</SelectItem>
+                        <SelectItem value="Malt">Malt</SelectItem>
+                        <SelectItem value="Yeast">Yeast</SelectItem>
+                        <SelectItem value="Adjuncts">Adjuncts</SelectItem>
+                        <SelectItem value="Packaging">Packaging</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="currentQuantity" className="text-right">
+                      Current Quantity
+                    </Label>
+                    <Input
+                      id="currentQuantity"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={newItem.currentQuantity}
+                      onChange={(e) => setNewItem({ ...newItem, currentQuantity: e.target.value })}
+                      className="col-span-2"
+                      required
+                    />
+                    <Select
+                      value={newItem.unit}
+                      onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="kg">kg</SelectItem>
+                        <SelectItem value="g">g</SelectItem>
+                        <SelectItem value="L">L</SelectItem>
+                        <SelectItem value="packs">packs</SelectItem>
+                        <SelectItem value="units">units</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="minimumQuantity" className="text-right">
+                      Minimum Level
+                    </Label>
+                    <Input
+                      id="minimumQuantity"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={newItem.minimumQuantity}
+                      onChange={(e) => setNewItem({ ...newItem, minimumQuantity: e.target.value })}
+                      className="col-span-3"
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="category" className="text-right">
-                    Category
-                  </Label>
-                  <Select
-                    value={newItem.category}
-                    onValueChange={(value) => setNewItem({ ...newItem, category: value })}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Hops">Hops</SelectItem>
-                      <SelectItem value="Malt">Malt</SelectItem>
-                      <SelectItem value="Yeast">Yeast</SelectItem>
-                      <SelectItem value="Adjuncts">Adjuncts</SelectItem>
-                      <SelectItem value="Packaging">Packaging</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="currentQuantity" className="text-right">
-                    Current Quantity
-                  </Label>
-                  <Input
-                    id="currentQuantity"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={newItem.currentQuantity}
-                    onChange={(e) => setNewItem({ ...newItem, currentQuantity: e.target.value })}
-                    className="col-span-2"
-                    required
-                  />
-                  <Select
-                    value={newItem.unit}
-                    onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="kg">kg</SelectItem>
-                      <SelectItem value="g">g</SelectItem>
-                      <SelectItem value="L">L</SelectItem>
-                      <SelectItem value="packs">packs</SelectItem>
-                      <SelectItem value="units">units</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="minimumQuantity" className="text-right">
-                    Minimum Level
-                  </Label>
-                  <Input
-                    id="minimumQuantity"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={newItem.minimumQuantity}
-                    onChange={(e) => setNewItem({ ...newItem, minimumQuantity: e.target.value })}
-                    className="col-span-3"
-                    required
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">Add Item</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Add Item</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       
       <Card>
@@ -401,6 +406,6 @@ export default function Inventory() {
           />
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }
