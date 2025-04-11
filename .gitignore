@@ -1,6 +1,40 @@
-node_modules
+
+build
+# Build artifacts
+.cache/
+# Dependencies
 dist
+dist-ssr
 .DS_Store
+# Editor directories and files
+.env
+.env.development.local
+# Environment variables
+.env.local
+.env.production.local
+.env.test.local
+.idea
+lerna-debug.log*
+*.local
+*.log
+logs
+*.njsproj
+node_modules
+npm-debug.log*
+*.ntvs*
+.pnp
+.pnp.js
+pnpm-debug.log*
+.replit/
+# Replit specific
 server/public
+*.sln
+*.suo
+*.sw?
+*.tar.gz# Logs
+.upm/
 vite.config.ts.*
-*.tar.gz
+.vscode/*
+!.vscode/extensions.json
+yarn-debug.log*
+yarn-error.log*
