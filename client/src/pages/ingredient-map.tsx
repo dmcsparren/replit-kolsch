@@ -14,13 +14,13 @@ export default function IngredientMapPage() {
   const [mapCenter, setMapCenter] = useState<LatLngExpression>([40, 0]);
   const [mapZoom, setMapZoom] = useState(2);
 
-  const { data: ingredientSources, isLoading, error } = useQuery({
+  const { data: ingredientSources = [], isLoading, error } = useQuery<IngredientSource[]>({
     queryKey: ["/api/ingredient-sources"],
   });
 
   useEffect(() => {
     // Set initial map position if we have data
-    if (ingredientSources && ingredientSources.length > 0) {
+    if (ingredientSources.length > 0) {
       // Use the first source as default center, or calculate centroid of all points
       const firstSource = ingredientSources[0];
       setMapCenter([
@@ -33,13 +33,15 @@ export default function IngredientMapPage() {
 
   // Get unique ingredient types from sources
   const getIngredientTypes = () => {
-    if (!ingredientSources) return [];
+    if (ingredientSources.length === 0) return [];
     
     const types = new Set<string>();
-    ingredientSources.forEach((source: IngredientSource) => {
-      source.suppliedIngredients?.forEach((ingredient: string) => {
-        types.add(ingredient);
-      });
+    ingredientSources.forEach((source) => {
+      if (source.suppliedIngredients) {
+        source.suppliedIngredients.forEach((ingredient: string) => {
+          types.add(ingredient);
+        });
+      }
     });
     
     return Array.from(types).sort();
@@ -47,10 +49,10 @@ export default function IngredientMapPage() {
 
   // Get unique supplier types
   const getSupplierTypes = () => {
-    if (!ingredientSources) return [];
+    if (ingredientSources.length === 0) return [];
     
     const types = new Set<string>();
-    ingredientSources.forEach((source: IngredientSource) => {
+    ingredientSources.forEach((source) => {
       types.add(source.type);
     });
     
@@ -59,8 +61,8 @@ export default function IngredientMapPage() {
 
   // Filter sources by active category
   const filteredSources = activeCategory 
-    ? ingredientSources?.filter((source: IngredientSource) => 
-        source.suppliedIngredients?.includes(activeCategory) || 
+    ? ingredientSources.filter((source) => 
+        (source.suppliedIngredients && source.suppliedIngredients.includes(activeCategory)) || 
         source.type === activeCategory
       )
     : ingredientSources;
@@ -164,7 +166,7 @@ export default function IngredientMapPage() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 
-                {filteredSources?.map((source: IngredientSource) => (
+                {filteredSources.map((source) => (
                   <Marker 
                     key={source.id}
                     position={[parseFloat(source.latitude), parseFloat(source.longitude)]}
@@ -183,7 +185,7 @@ export default function IngredientMapPage() {
                         )}
                         
                         <div className="flex flex-wrap gap-1 mb-2">
-                          {source.suppliedIngredients?.map((ingredient: string) => (
+                          {source.suppliedIngredients && source.suppliedIngredients.map((ingredient: string) => (
                             <Badge 
                               key={`${source.id}-${ingredient}`} 
                               variant="outline"
