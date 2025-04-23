@@ -10,6 +10,7 @@ import Equipment from "@/pages/equipment";
 import Schedule from "@/pages/schedule";
 import Recipes from "@/pages/recipes";
 import Reports from "@/pages/reports";
+import IngredientMap from "@/pages/ingredient-map";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { useState, useEffect } from "react";
@@ -31,6 +32,7 @@ function Router() {
             <Route path="/" component={Dashboard} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/ingredients" component={Ingredients} />
+            <Route path="/ingredient-map" component={IngredientMap} />
             <Route path="/equipment" component={Equipment} />
             <Route path="/schedule" component={Schedule} />
             <Route path="/recipes" component={Recipes} />
