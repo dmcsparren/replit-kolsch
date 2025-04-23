@@ -42,6 +42,40 @@ export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick
   lastUpdated: true,
 });
 
+// Ingredient source model
+export const ingredientSources = pgTable("ingredient_sources", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  country: text("country").notNull(),
+  latitude: decimal("latitude").notNull(),
+  longitude: decimal("longitude").notNull(),
+  type: text("type").notNull(), // hop farm, malt house, etc.
+  description: text("description"),
+  website: text("website"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  image: text("image"), // URL to image
+  suppliedIngredients: json("supplied_ingredients"), // Array of ingredients supplied
+});
+
+export const insertIngredientSourceSchema = createInsertSchema(ingredientSources).pick({
+  name: true,
+  address: true,
+  city: true,
+  country: true,
+  latitude: true,
+  longitude: true,
+  type: true,
+  description: true,
+  website: true,
+  contactEmail: true,
+  contactPhone: true,
+  image: true,
+  suppliedIngredients: true,
+});
+
 // Equipment model
 export const equipment = pgTable("equipment", {
   id: serial("id").primaryKey(),
@@ -114,6 +148,9 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export type InventoryItem = typeof inventoryItems.$inferSelect;
 export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>;
+
+export type IngredientSource = typeof ingredientSources.$inferSelect;
+export type InsertIngredientSource = z.infer<typeof insertIngredientSourceSchema>;
 
 export type Equipment = typeof equipment.$inferSelect;
 export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
