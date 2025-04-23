@@ -6,7 +6,8 @@ import {
   insertInventoryItemSchema, 
   insertEquipmentSchema, 
   insertRecipeSchema, 
-  insertBrewingScheduleSchema 
+  insertBrewingScheduleSchema,
+  insertIngredientSourceSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -340,6 +341,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Ingredient sources routes
+  app.get("/api/ingredient-sources", async (_req: Request, res: Response) => {
+    try {
+      const sources = await storage.getAllIngredientSources();
+      res.json(sources);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch ingredient sources" });
+    }
+  });
+  
+  app.get("/api/ingredient-sources/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const source = await storage.getIngredientSource(id);
+      if (!source) {
+        return res.status(404).json({ message: "Ingredient source not found" });
+      }
+      
+      res.json(source);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch ingredient source" });
+    }
+  });
+  
+  app.post("/api/ingredient-sources", async (req: Request, res: Response) => {
+    try {
+      const validatedData = insertIngredientSourceSchema.parse(req.body);
+      const newSource = await storage.createIngredientSource(validatedData);
+      res.status(201).json(newSource);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid ingredient source data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create ingredient source" });
+    }
+  });
+  
+  app.put("/api/ingredient-sources/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const validatedData = insertIngredientSourceSchema.partial().parse(req.body);
+      const updatedSource = await storage.updateIngredientSource(id, validatedData);
+      
+      if (!updatedSource) {
+        return res.status(404).json({ message: "Ingredient source not found" });
+      }
+      
+      res.json(updatedSource);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid ingredient source data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update ingredient source" });
+    }
+  });
+  
+  app.delete("/api/ingredient-sources/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const success = await storage.deleteIngredientSource(id);
+      if (!success) {
+        return res.status(404).json({ message: "Ingredient source not found" });
+      }
+      
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete ingredient source" });
+    }
+  });
+
   // Stats routes
   app.get("/api/stats", async (_req: Request, res: Response) => {
     try {

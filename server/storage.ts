@@ -1,6 +1,7 @@
 import { 
   users, InsertUser, User,
   inventoryItems, InsertInventoryItem, InventoryItem,
+  ingredientSources, InsertIngredientSource, IngredientSource,
   equipment, InsertEquipment, Equipment,
   recipes, InsertRecipe, Recipe,
   brewingSchedules, InsertBrewingSchedule, BrewingSchedule
@@ -60,6 +61,35 @@ export class DatabaseStorage implements IStorage {
   async deleteInventoryItem(id: number): Promise<boolean> {
     const result = await db.delete(inventoryItems).where(eq(inventoryItems.id, id));
     return true; // In a real application, you'd check if any rows were affected
+  }
+
+  // Ingredient source operations
+  async getAllIngredientSources(): Promise<IngredientSource[]> {
+    return await db.select().from(ingredientSources);
+  }
+
+  async getIngredientSource(id: number): Promise<IngredientSource | undefined> {
+    const [source] = await db.select().from(ingredientSources).where(eq(ingredientSources.id, id));
+    return source || undefined;
+  }
+
+  async createIngredientSource(source: InsertIngredientSource): Promise<IngredientSource> {
+    const [newSource] = await db.insert(ingredientSources).values(source).returning();
+    return newSource;
+  }
+
+  async updateIngredientSource(id: number, source: Partial<IngredientSource>): Promise<IngredientSource | undefined> {
+    const [updated] = await db
+      .update(ingredientSources)
+      .set(source)
+      .where(eq(ingredientSources.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async deleteIngredientSource(id: number): Promise<boolean> {
+    await db.delete(ingredientSources).where(eq(ingredientSources.id, id));
+    return true;
   }
 
   // Equipment operations
@@ -217,6 +247,89 @@ export class DatabaseStorage implements IStorage {
       
       for (const item of sampleInventory) {
         await this.createInventoryItem(item);
+      }
+      
+      // Create sample ingredient sources
+      const sampleIngredientSources: InsertIngredientSource[] = [
+        {
+          name: "Yakima Valley Hops",
+          address: "702 N 1st Ave",
+          city: "Yakima",
+          country: "USA",
+          latitude: "46.6021",
+          longitude: "-120.5059",
+          type: "Hop Farm",
+          description: "Premium hop farm in the Pacific Northwest",
+          website: "https://yakimavalleyhops.com",
+          contactEmail: "info@yakimavalleyhops.com",
+          contactPhone: "+1-800-555-1234",
+          image: "https://example.com/yakima-hops.jpg",
+          suppliedIngredients: ["Cascade Hops", "Centennial Hops", "Simcoe Hops"]
+        },
+        {
+          name: "Bamberg Malthouse",
+          address: "Malzstraße 5",
+          city: "Bamberg",
+          country: "Germany",
+          latitude: 49.8988,
+          longitude: 10.9028,
+          type: "Malt House",
+          description: "Traditional German malt producer",
+          website: "https://bambergmalt.de",
+          contactEmail: "kontakt@bambergmalt.de",
+          contactPhone: "+49-951-555-6789",
+          image: "https://example.com/bamberg-malt.jpg",
+          suppliedIngredients: ["Pilsner Malt", "Vienna Malt", "Munich Malt"]
+        },
+        {
+          name: "Bohemian Hop Gardens",
+          address: "Žatec 438",
+          city: "Žatec",
+          country: "Czech Republic",
+          latitude: 50.3271,
+          longitude: 13.5456,
+          type: "Hop Farm",
+          description: "Historic Saaz hop producer from Czech Republic",
+          website: "https://bohemianhops.cz",
+          contactEmail: "info@bohemianhops.cz",
+          contactPhone: "+420-414-555-7890",
+          image: "https://example.com/bohemian-hops.jpg",
+          suppliedIngredients: ["Saaz Hops"]
+        },
+        {
+          name: "White Labs",
+          address: "9495 Candida St",
+          city: "San Diego",
+          country: "USA",
+          latitude: 32.8328,
+          longitude: -117.1408,
+          type: "Yeast Lab",
+          description: "Premium liquid yeast producer",
+          website: "https://whitelabs.com",
+          contactEmail: "info@whitelabs.com",
+          contactPhone: "+1-888-555-9876",
+          image: "https://example.com/white-labs.jpg",
+          suppliedIngredients: ["Kölsch Yeast", "American Ale Yeast", "Lager Yeast"]
+        },
+        {
+          name: "Canterbury Malting",
+          address: "123 Barley Rd",
+          city: "Canterbury",
+          country: "UK",
+          latitude: 51.2798,
+          longitude: 1.0828,
+          type: "Malt House",
+          description: "Traditional English malt producer",
+          website: "https://canterburymalt.co.uk",
+          contactEmail: "sales@canterburymalt.co.uk",
+          contactPhone: "+44-1227-555-4321",
+          image: "https://example.com/canterbury-malt.jpg",
+          suppliedIngredients: ["Pale Malt", "Crystal Malt", "Maris Otter"]
+        }
+      ];
+      
+      for (const source of sampleIngredientSources) {
+        await this.createIngredientSource(source);
       }
       
       // Create sample equipment

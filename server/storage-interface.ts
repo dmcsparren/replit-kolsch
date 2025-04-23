@@ -1,6 +1,7 @@
 import { 
   User, InsertUser,
   InventoryItem, InsertInventoryItem,
+  IngredientSource, InsertIngredientSource,
   Equipment, InsertEquipment,
   Recipe, InsertRecipe,
   BrewingSchedule, InsertBrewingSchedule
@@ -18,6 +19,13 @@ export interface IStorage {
   createInventoryItem(item: InsertInventoryItem): Promise<InventoryItem>;
   updateInventoryItem(id: number, item: Partial<InventoryItem>): Promise<InventoryItem | undefined>;
   deleteInventoryItem(id: number): Promise<boolean>;
+  
+  // Ingredient source operations
+  getAllIngredientSources(): Promise<IngredientSource[]>;
+  getIngredientSource(id: number): Promise<IngredientSource | undefined>;
+  createIngredientSource(source: InsertIngredientSource): Promise<IngredientSource>;
+  updateIngredientSource(id: number, source: Partial<IngredientSource>): Promise<IngredientSource | undefined>;
+  deleteIngredientSource(id: number): Promise<boolean>;
   
   // Equipment operations
   getAllEquipment(): Promise<Equipment[]>;
