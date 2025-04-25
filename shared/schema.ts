@@ -29,6 +29,7 @@ export const inventoryItems = pgTable("inventory_items", {
   status: text("status").notNull(),
   forecast: text("forecast").notNull(),
   lastUpdated: timestamp("last_updated").notNull(),
+  imageUrl: text("image_url"), // URL to image of the inventory item
 });
 
 export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick({
@@ -40,6 +41,7 @@ export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick
   status: true,
   forecast: true,
   lastUpdated: true,
+  imageUrl: true,
 });
 
 // Ingredient source model
@@ -109,6 +111,7 @@ export const recipes = pgTable("recipes", {
   srm: decimal("srm").notNull(),
   ingredients: json("ingredients").notNull(),
   instructions: json("instructions").notNull(),
+  imageUrl: text("image_url"), // URL to recipe image or beauty shot
 });
 
 export const insertRecipeSchema = createInsertSchema(recipes).pick({
@@ -120,6 +123,7 @@ export const insertRecipeSchema = createInsertSchema(recipes).pick({
   srm: true,
   ingredients: true,
   instructions: true,
+  imageUrl: true,
 });
 
 // Brewing schedule model
