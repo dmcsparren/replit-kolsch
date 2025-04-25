@@ -167,6 +167,28 @@ export default function RecipesPage() {
   // Define table columns
   const columns: ColumnDef<Recipe>[] = [
     {
+      accessorKey: "imageUrl",
+      header: "Image",
+      cell: ({ row }) => {
+        const imageUrl = row.getValue("imageUrl") as string | undefined;
+        return (
+          <div className="flex justify-center">
+            {imageUrl ? (
+              <img 
+                src={imageUrl} 
+                alt="Recipe" 
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                <ImageIcon className="h-5 w-5 text-gray-300" />
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "name",
       header: "Recipe Name",
     },
@@ -476,8 +498,22 @@ export default function RecipesPage() {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {recipes.map((recipe) => (
-          <Card key={recipe.id} className="hover:shadow-md transition-shadow">
+        {recipes?.map((recipe) => (
+          <Card key={recipe.id} className="hover:shadow-md transition-shadow overflow-hidden">
+            {recipe.imageUrl && (
+              <div className="h-40 w-full overflow-hidden">
+                <img 
+                  src={recipe.imageUrl} 
+                  alt={recipe.name}
+                  className="h-full w-full object-cover" 
+                />
+              </div>
+            )}
+            {!recipe.imageUrl && (
+              <div className="h-40 w-full bg-gray-100 flex items-center justify-center">
+                <ImageIcon className="h-12 w-12 text-gray-300" />
+              </div>
+            )}
             <CardContent className="p-4">
               <div className="flex justify-between mb-2">
                 <h3 className="font-medium text-lg">{recipe.name}</h3>
