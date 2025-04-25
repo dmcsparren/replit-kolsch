@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Recipe } from "@shared/schema";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Plus, Search, Trash } from "lucide-react";
+import { Pencil, Plus, Search, Trash, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 export default function RecipesPage() {
   const { toast } = useToast();
@@ -44,6 +45,7 @@ export default function RecipesPage() {
     srm: "5.0",
     ingredients: [] as string[],
     instructions: [] as string[],
+    imageUrl: "",
   });
   const [currentIngredient, setCurrentIngredient] = useState("");
   const [currentInstruction, setCurrentInstruction] = useState("");
@@ -105,6 +107,7 @@ export default function RecipesPage() {
       srm: "5.0",
       ingredients: [],
       instructions: [],
+      imageUrl: "",
     });
     setCurrentIngredient("");
     setCurrentInstruction("");
@@ -364,6 +367,19 @@ export default function RecipesPage() {
                           required
                         />
                       </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <Label className="text-right pt-2">
+                      Recipe Image
+                    </Label>
+                    <div className="col-span-3">
+                      <ImageUpload 
+                        imageUrl={newRecipe.imageUrl}
+                        onImageChange={(url) => setNewRecipe({ ...newRecipe, imageUrl: url || "" })}
+                        label="Recipe Image"
+                      />
                     </div>
                   </div>
                 </TabsContent>
