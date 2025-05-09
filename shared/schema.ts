@@ -162,5 +162,25 @@ export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
 export type Recipe = typeof recipes.$inferSelect;
 export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
 
+// Ingredient price history model
+export const ingredientPriceHistory = pgTable("ingredient_price_history", {
+  id: serial("id").primaryKey(),
+  ingredientId: integer("ingredient_id").notNull().references(() => inventoryItems.id),
+  date: timestamp("date").notNull(),
+  price: decimal("price").notNull(),
+  supplier: text("supplier"),
+  notes: text("notes"),
+});
+
+export const insertIngredientPriceHistorySchema = createInsertSchema(ingredientPriceHistory).pick({
+  ingredientId: true,
+  date: true,
+  price: true,
+  supplier: true,
+  notes: true,
+});
+
 export type BrewingSchedule = typeof brewingSchedules.$inferSelect;
 export type InsertBrewingSchedule = z.infer<typeof insertBrewingScheduleSchema>;
+export type IngredientPriceHistory = typeof ingredientPriceHistory.$inferSelect;
+export type InsertIngredientPriceHistory = z.infer<typeof insertIngredientPriceHistorySchema>;

@@ -4,7 +4,8 @@ import {
   IngredientSource, InsertIngredientSource,
   Equipment, InsertEquipment,
   Recipe, InsertRecipe,
-  BrewingSchedule, InsertBrewingSchedule
+  BrewingSchedule, InsertBrewingSchedule,
+  IngredientPriceHistory, InsertIngredientPriceHistory
 } from "@shared/schema";
 
 export interface IStorage {
@@ -47,4 +48,11 @@ export interface IStorage {
   createBrewingSchedule(schedule: InsertBrewingSchedule): Promise<BrewingSchedule>;
   updateBrewingSchedule(id: number, schedule: Partial<BrewingSchedule>): Promise<BrewingSchedule | undefined>;
   deleteBrewingSchedule(id: number): Promise<boolean>;
+  
+  // Ingredient price history operations
+  getPriceHistoryForIngredient(ingredientId: number): Promise<IngredientPriceHistory[]>;
+  getAllPriceHistory(): Promise<IngredientPriceHistory[]>;
+  addPriceHistoryEntry(entry: InsertIngredientPriceHistory): Promise<IngredientPriceHistory>;
+  updatePriceHistoryEntry(id: number, entry: Partial<IngredientPriceHistory>): Promise<IngredientPriceHistory | undefined>;
+  deletePriceHistoryEntry(id: number): Promise<boolean>;
 }

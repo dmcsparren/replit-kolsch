@@ -4,7 +4,8 @@ import {
   ingredientSources, InsertIngredientSource, IngredientSource,
   equipment, InsertEquipment, Equipment,
   recipes, InsertRecipe, Recipe,
-  brewingSchedules, InsertBrewingSchedule, BrewingSchedule
+  brewingSchedules, InsertBrewingSchedule, BrewingSchedule,
+  ingredientPriceHistory, InsertIngredientPriceHistory, IngredientPriceHistory
 } from "@shared/schema";
 import { IStorage } from './storage-interface';
 import { db } from './db';
@@ -176,6 +177,37 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBrewingSchedule(id: number): Promise<boolean> {
     await db.delete(brewingSchedules).where(eq(brewingSchedules.id, id));
+    return true;
+  }
+  
+  // Ingredient price history operations
+  async getPriceHistoryForIngredient(ingredientId: number): Promise<IngredientPriceHistory[]> {
+    return await db.select()
+      .from(ingredientPriceHistory)
+      .where(eq(ingredientPriceHistory.ingredientId, ingredientId))
+      .orderBy(ingredientPriceHistory.date);
+  }
+  
+  async getAllPriceHistory(): Promise<IngredientPriceHistory[]> {
+    return await db.select().from(ingredientPriceHistory).orderBy(ingredientPriceHistory.date);
+  }
+  
+  async addPriceHistoryEntry(entry: InsertIngredientPriceHistory): Promise<IngredientPriceHistory> {
+    const [newEntry] = await db.insert(ingredientPriceHistory).values(entry).returning();
+    return newEntry;
+  }
+  
+  async updatePriceHistoryEntry(id: number, entry: Partial<IngredientPriceHistory>): Promise<IngredientPriceHistory | undefined> {
+    const [updated] = await db
+      .update(ingredientPriceHistory)
+      .set(entry)
+      .where(eq(ingredientPriceHistory.id, id))
+      .returning();
+    return updated || undefined;
+  }
+  
+  async deletePriceHistoryEntry(id: number): Promise<boolean> {
+    await db.delete(ingredientPriceHistory).where(eq(ingredientPriceHistory.id, id));
     return true;
   }
 
