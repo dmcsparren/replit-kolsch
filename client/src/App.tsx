@@ -11,6 +11,7 @@ import Schedule from "@/pages/schedule";
 import Recipes from "@/pages/recipes";
 import Reports from "@/pages/reports";
 import IngredientMap from "@/pages/ingredient-map";
+import PriceTrends from "@/pages/price-trends";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { useState, useEffect } from "react";
@@ -37,6 +38,7 @@ function Router() {
             <Route path="/schedule" component={Schedule} />
             <Route path="/recipes" component={Recipes} />
             <Route path="/reports" component={Reports} />
+            <Route path="/price-trends" component={PriceTrends} />
             <Route component={NotFound} />
           </Switch>
         </main>

@@ -11,7 +11,8 @@ import {
   Briefcase, 
   Info, 
   X,
-  Map
+  Map,
+  TrendingUp
 } from "lucide-react";
 
 type SidebarProps = {
@@ -44,6 +45,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
     { path: "/inventory", label: "Inventory", icon: <Package2 className="h-5 w-5 mr-3" /> },
     { path: "/ingredients", label: "Ingredients", icon: <ShoppingBasket className="h-5 w-5 mr-3" /> },
     { path: "/ingredient-map", label: "Ingredient Map", icon: <Map className="h-5 w-5 mr-3" /> },
+    { path: "/price-trends", label: "Price Trends", icon: <TrendingUp className="h-5 w-5 mr-3" /> },
     { path: "/equipment", label: "Equipment", icon: <Settings2 className="h-5 w-5 mr-3" /> },
     { path: "/schedule", label: "Schedule", icon: <Calendar className="h-5 w-5 mr-3" /> },
     { path: "/recipes", label: "Recipes", icon: <Briefcase className="h-5 w-5 mr-3" /> },
