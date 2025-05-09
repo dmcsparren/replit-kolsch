@@ -58,7 +58,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Layers className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">kölsch</span>
+            <span className="text-xl font-bold">kolsch</span>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#welcome" className="text-sm font-medium hover:text-primary">Home</a>
@@ -78,7 +78,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-amber-600">
-                Brew Better with kölsch
+                Brew Better with kolsch
               </h1>
               <p className="text-lg mb-8 text-neutral-700">
                 Comprehensive brewery management software for small breweries. Simplify your operations, 
@@ -269,7 +269,7 @@ export default function LandingPage() {
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-4">Request a Demo</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              See how kölsch can transform your brewery operations. Fill out the form below and we'll contact you to schedule a personalized demo.
+              See how kolsch can transform your brewery operations. Fill out the form below and we'll contact you to schedule a personalized demo.
             </p>
           </div>
           
@@ -333,7 +333,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Have questions or want to learn more about kölsch? We're here to help.
+              Have questions or want to learn more about kolsch? We're here to help.
             </p>
           </div>
           
@@ -432,7 +432,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Layers className="h-6 w-6 text-amber-400" />
-                <span className="text-xl font-bold text-amber-400">kölsch</span>
+                <span className="text-xl font-bold text-amber-400">kolsch</span>
               </div>
               <p className="text-neutral-400">
                 Brewery management software for small and independent breweries.
@@ -470,7 +470,7 @@ export default function LandingPage() {
           </div>
           
           <div className="border-t border-neutral-800 mt-10 pt-6 text-center text-neutral-500">
-            <p>© {new Date().getFullYear()} kölsch Brewery Management. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} kolsch Brewery Management. All rights reserved.</p>
           </div>
         </div>
       </footer>
