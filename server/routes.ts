@@ -7,7 +7,8 @@ import {
   insertEquipmentSchema, 
   insertRecipeSchema, 
   insertBrewingScheduleSchema,
-  insertIngredientSourceSchema
+  insertIngredientSourceSchema,
+  insertIngredientPriceHistorySchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -464,6 +465,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Ingredient price history routes
+  app.get("/api/price-history", async (_req: Request, res: Response) => {
+    try {
+      const history = await storage.getAllPriceHistory();
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch price history" });
+    }
+  });
+  
+  app.get("/api/price-history/ingredient/:id", async (req: Request, res: Response) => {
+    try {
+      const ingredientId = parseInt(req.params.id);
+      if (isNaN(ingredientId)) {
+        return res.status(400).json({ message: "Invalid ingredient ID format" });
+      }
+      
+      const history = await storage.getPriceHistoryForIngredient(ingredientId);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch price history for ingredient" });
+    }
+  });
+  
+  app.post("/api/price-history", async (req: Request, res: Response) => {
+    try {
+      const validatedData = insertIngredientPriceHistorySchema.parse(req.body);
+      const newEntry = await storage.addPriceHistoryEntry(validatedData);
+      res.status(201).json(newEntry);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid price history data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create price history entry" });
+    }
+  });
+  
+  app.put("/api/price-history/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const validatedData = insertIngredientPriceHistorySchema.partial().parse(req.body);
+      const updatedEntry = await storage.updatePriceHistoryEntry(id, validatedData);
+      
+      if (!updatedEntry) {
+        return res.status(404).json({ message: "Price history entry not found" });
+      }
+      
+      res.json(updatedEntry);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid price history data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update price history entry" });
+    }
+  });
+  
+  app.delete("/api/price-history/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const success = await storage.deletePriceHistoryEntry(id);
+      if (!success) {
+        return res.status(404).json({ message: "Price history entry not found" });
+      }
+      
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete price history entry" });
     }
   });
 

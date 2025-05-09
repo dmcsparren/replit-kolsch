@@ -497,6 +497,55 @@ export class DatabaseStorage implements IStorage {
       for (const schedule of sampleSchedules) {
         await this.createBrewingSchedule(schedule);
       }
+      
+      // Create sample price history
+      const now = new Date();
+      const oneMonthAgo = new Date(now);
+      oneMonthAgo.setMonth(now.getMonth() - 1);
+      
+      const twoMonthsAgo = new Date(now);
+      twoMonthsAgo.setMonth(now.getMonth() - 2);
+      
+      const threeMonthsAgo = new Date(now);
+      threeMonthsAgo.setMonth(now.getMonth() - 3);
+      
+      const fourMonthsAgo = new Date(now);
+      fourMonthsAgo.setMonth(now.getMonth() - 4);
+      
+      const fiveMonthsAgo = new Date(now);
+      fiveMonthsAgo.setMonth(now.getMonth() - 5);
+      
+      const sixMonthsAgo = new Date(now);
+      sixMonthsAgo.setMonth(now.getMonth() - 6);
+      
+      // Sample price history for Cascade Hops (id: 1)
+      const cascadeHopsPriceHistory = [
+        { ingredientId: 1, date: sixMonthsAgo, price: "45.00", supplier: "Yakima Valley Hops", notes: "Bulk purchase" },
+        { ingredientId: 1, date: fourMonthsAgo, price: "46.50", supplier: "Yakima Valley Hops", notes: "Price increase" },
+        { ingredientId: 1, date: twoMonthsAgo, price: "48.75", supplier: "Yakima Valley Hops", notes: "Seasonal increase" },
+        { ingredientId: 1, date: now, price: "47.25", supplier: "Yakima Valley Hops", notes: "Recent purchase" }
+      ];
+      
+      // Sample price history for Pilsner Malt (id: 2)
+      const pilsnerMaltPriceHistory = [
+        { ingredientId: 2, date: sixMonthsAgo, price: "32.00", supplier: "Bamberg Malthouse", notes: "Initial contract" },
+        { ingredientId: 2, date: fiveMonthsAgo, price: "32.00", supplier: "Bamberg Malthouse", notes: "Fixed price contract" },
+        { ingredientId: 2, date: threeMonthsAgo, price: "35.50", supplier: "Bamberg Malthouse", notes: "Contract renewal" },
+        { ingredientId: 2, date: oneMonthAgo, price: "37.25", supplier: "Bamberg Malthouse", notes: "Price increase" },
+        { ingredientId: 2, date: now, price: "37.25", supplier: "Bamberg Malthouse", notes: "Current price" }
+      ];
+      
+      // Sample price history for Saaz Hops (id: 5)
+      const saazHopsPriceHistory = [
+        { ingredientId: 5, date: sixMonthsAgo, price: "55.00", supplier: "Bohemian Hop Gardens", notes: "Winter price" },
+        { ingredientId: 5, date: fourMonthsAgo, price: "58.25", supplier: "Bohemian Hop Gardens", notes: "Low availability" },
+        { ingredientId: 5, date: twoMonthsAgo, price: "62.50", supplier: "Bohemian Hop Gardens", notes: "Premium quality" },
+        { ingredientId: 5, date: now, price: "64.75", supplier: "Bohemian Hop Gardens", notes: "Current market rate" }
+      ];
+      
+      for (const entry of [...cascadeHopsPriceHistory, ...pilsnerMaltPriceHistory, ...saazHopsPriceHistory]) {
+        await this.addPriceHistoryEntry(entry);
+      }
     }
   }
 }
