@@ -312,14 +312,20 @@ export class DatabaseStorage implements IStorage {
         name: "Brew Kettle #1",
         type: "kettle",
         status: "operational",
-        notes: "Primary brew kettle for standard batches."
+        maintenanceStatus: "good",
+        currentBatch: "Summer Kölsch",
+        timeRemaining: "1:30h",
+        utilization: 80
       });
 
       await this.createEquipment({
         name: "Fermenter Tank A",
         type: "fermenter",
         status: "operational",
-        notes: "Stainless steel conical fermenter."
+        maintenanceStatus: "good",
+        currentBatch: "Vienna Lager",
+        timeRemaining: "3 days",
+        utilization: 75
       });
 
       // Add example recipe

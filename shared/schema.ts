@@ -83,25 +83,21 @@ export const equipment = pgTable("equipment", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   type: text("type").notNull(),
-  capacity: decimal("capacity"),
-  unitOfMeasure: text("unit_of_measure"),
-  acquisitionDate: timestamp("acquisition_date"),
-  lastMaintenanceDate: timestamp("last_maintenance_date"),
-  maintenanceInterval: integer("maintenance_interval"),
   status: text("status").notNull(),
-  notes: text("notes"),
+  maintenanceStatus: text("maintenance_status"),
+  currentBatch: text("current_batch"),
+  timeRemaining: text("time_remaining"),
+  utilization: integer("utilization"),
 });
 
 export const insertEquipmentSchema = createInsertSchema(equipment).pick({
   name: true,
   type: true,
-  capacity: true,
-  unitOfMeasure: true,
-  acquisitionDate: true,
-  lastMaintenanceDate: true,
-  maintenanceInterval: true,
   status: true,
-  notes: true,
+  maintenanceStatus: true,
+  currentBatch: true,
+  timeRemaining: true,
+  utilization: true,
 });
 
 // Recipe model
