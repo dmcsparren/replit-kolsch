@@ -311,12 +311,19 @@ export default function SchedulePage() {
           <CardTitle>Calendar View</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center p-10 border-2 border-dashed rounded-md">
-            <h3 className="font-medium text-lg mb-2">Calendar View</h3>
-            <p className="text-muted-foreground">
-              A detailed calendar view would be implemented here using React Big Calendar.
-            </p>
-          </div>
+          {schedules && schedules.length > 0 ? (
+            <BrewingCalendar 
+              schedules={schedules} 
+              onDeleteSchedule={(id) => deleteScheduleMutation.mutate(id)}
+            />
+          ) : (
+            <div className="text-center p-10 border-2 border-dashed rounded-md">
+              <h3 className="font-medium text-lg mb-2">No Brewing Sessions</h3>
+              <p className="text-muted-foreground">
+                Schedule your first brewing session to see it in the calendar.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
       

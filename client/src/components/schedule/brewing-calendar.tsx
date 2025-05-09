@@ -10,7 +10,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -21,29 +22,13 @@ const locales = {
 
 const localizer = dateFnsLocalizer({
   format,
-  parse,
+  parse: (str: string, format: string, options?: any) => {
+    return parse(str, format, new Date(), options);
+  },
   startOfWeek,
   getDay,
   locales,
 });
-
-const localizer = {
-  ...datefnsLocalizer,
-  formats: {
-    dateFormat: 'dd',
-    dayFormat: 'dd eee',
-    weekdayFormat: 'eee',
-    monthHeaderFormat: 'MMMM yyyy',
-    dayHeaderFormat: 'EEEE MMM d',
-    dayRangeHeaderFormat: ({ start, end }: { start: Date, end: Date }) => 
-      `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`,
-    timeGutterFormat: (date: Date) => format(date, 'h:mm a'),
-    agendaDateFormat: (date: Date) => format(date, 'EEE MMM d'),
-    agendaTimeFormat: (date: Date) => format(date, 'h:mm a'),
-    agendaTimeRangeFormat: ({ start, end }: { start: Date, end: Date }) => 
-      `${format(start, 'h:mm a')} - ${format(end, 'h:mm a')}`,
-  }
-};
 
 // Map brewing schedules to events for the calendar
 const mapSchedulesToEvents = (schedules: BrewingSchedule[]) => {
@@ -179,7 +164,7 @@ export default function BrewingCalendar({
     <>
       <div className="h-[600px] mt-4">
         <Calendar
-          localizer={localizer as any}
+          localizer={localizer}
           events={events}
           startAccessor="start"
           endAccessor="end"
@@ -198,6 +183,7 @@ export default function BrewingCalendar({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{selectedEvent?.recipeName}</DialogTitle>
+            <DialogDescription>Brewing session details</DialogDescription>
           </DialogHeader>
           
           <div className="py-4">
