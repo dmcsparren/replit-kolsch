@@ -1,0 +1,138 @@
+/* Custom styles for React Big Calendar */
+
+/* General calendar styling */
+.rbc-calendar {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+/* Header and toolbar */
+.rbc-toolbar {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.rbc-toolbar button {
+  color: #4b5563;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #eab308;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* Month view */
+.rbc-month-view {
+  border: none;
+}
+
+.rbc-month-header {
+  background-color: #f9fafb;
+}
+
+.rbc-header {
+  padding: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.rbc-date-cell {
+  padding: 0.25rem 0.5rem;
+  text-align: right;
+  font-size: 0.875rem;
+}
+
+.rbc-month-row {
+  border-color: #e5e7eb;
+}
+
+.rbc-off-range-bg {
+  background-color: #f3f4f6;
+}
+
+.rbc-today {
+  background-color: rgba(234, 179, 8, 0.1);
+}
+
+/* Week and day view */
+.rbc-time-view {
+  border: none;
+}
+
+.rbc-time-header {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.rbc-time-header-content {
+  border-color: #e5e7eb;
+}
+
+.rbc-time-content {
+  border-color: #e5e7eb;
+}
+
+.rbc-time-slot {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.rbc-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0 0.5rem;
+}
+
+/* Events */
+.rbc-event {
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #eab308;
+  border: none;
+}
+
+.rbc-event-label {
+  font-size: 0.75rem;
+}
+
+.rbc-event-content {
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Additional overrides for dark mode compatibility (if needed) */
+@media (prefers-color-scheme: dark) {
+  .rbc-calendar {
+    background-color: #1f2937;
+  }
+  
+  .rbc-toolbar button {
+    color: #d1d5db;
+  }
+  
+  .rbc-header, .rbc-date-cell {
+    color: #d1d5db;
+  }
+  
+  .rbc-month-header {
+    background-color: #111827;
+  }
+  
+  .rbc-off-range-bg {
+    background-color: #1f2937;
+  }
+  
+  .rbc-today {
+    background-color: rgba(234, 179, 8, 0.15);
+  }
+  
+  .rbc-month-row, .rbc-time-header, .rbc-time-content, .rbc-time-header-content {
+    border-color: #374151;
+  }
+}

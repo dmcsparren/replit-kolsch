@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { BrewingSchedule, Recipe } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
+import BrewingCalendar from "@/components/schedule/brewing-calendar";
+import "@/components/schedule/calendar-styles.css";
 import {
   Dialog,
   DialogContent,
