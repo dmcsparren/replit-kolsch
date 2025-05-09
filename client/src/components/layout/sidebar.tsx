@@ -64,7 +64,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
       <div className="p-4 flex items-center justify-between border-b border-sidebar-border">
         <div className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded bg-amber-500 flex items-center justify-center text-white font-bold">k</div>
-          <h1 className="text-xl font-bold text-primary">kölsch</h1>
+          <h1 className="text-xl font-bold text-primary">kolsch</h1>
         </div>
         
         {isMobile && (

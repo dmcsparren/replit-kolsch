@@ -330,15 +330,15 @@ export class DatabaseStorage implements IStorage {
 
       // Add example recipe
       await this.createRecipe({
-        name: "Summer Kölsch",
-        type: "Kölsch",
+        name: "Summer Kolsch",
+        type: "Kolsch",
         batchSize: "500",
         unitOfMeasure: "L",
         originalGravity: "1.048",
         finalGravity: "1.010",
         abv: "5.0",
         ibu: 25,
-        description: "A crisp, clean traditional German Kölsch.",
+        description: "A crisp, clean traditional German Kolsch.",
         instructions: [
           "Mash at 65°C for 60 min.",
           "Boil for 60 min with hop additions at 60 and 15 min.", 
@@ -348,7 +348,7 @@ export class DatabaseStorage implements IStorage {
           { name: "Pilsner Malt", amount: 90, unit: "kg" },
           { name: "Vienna Malt", amount: 10, unit: "kg" },
           { name: "Hallertau Hops", amount: 800, unit: "g" },
-          { name: "Kölsch Yeast", amount: 4, unit: "packs" }
+          { name: "Kolsch Yeast", amount: 4, unit: "packs" }
         ],
         imageUrl: null,
         lastBrewed: null,
@@ -362,7 +362,7 @@ export class DatabaseStorage implements IStorage {
       endDate.setHours(16, 0, 0, 0);
 
       await this.createBrewingSchedule({
-        recipeName: "Summer Kölsch",
+        recipeName: "Summer Kolsch",
         batchNumber: "Batch #4327",
         startDate: startDate,
         endDate: endDate,
