@@ -7,14 +7,14 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  name: text("name").notNull(),
+  email: text("email").notNull(),
   role: text("role").notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
-  name: true,
+  email: true,
   role: true,
 });
 
@@ -23,24 +23,26 @@ export const inventoryItems = pgTable("inventory_items", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   category: text("category").notNull(),
-  currentQuantity: decimal("current_quantity").notNull(),
-  minimumQuantity: decimal("minimum_quantity").notNull(),
+  quantity: decimal("quantity").notNull(),
   unit: text("unit").notNull(),
-  status: text("status").notNull(),
-  forecast: text("forecast").notNull(),
-  lastUpdated: timestamp("last_updated").notNull(),
+  threshold: decimal("threshold").notNull(),
+  costPerUnit: decimal("cost_per_unit").notNull(),
+  expirationDate: timestamp("expiration_date"),
+  notes: text("notes"),
+  supplier: text("supplier"),
   imageUrl: text("image_url"), // URL to image of the inventory item
 });
 
 export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick({
   name: true,
   category: true,
-  currentQuantity: true,
-  minimumQuantity: true,
+  quantity: true,
   unit: true,
-  status: true,
-  forecast: true,
-  lastUpdated: true,
+  threshold: true,
+  costPerUnit: true,
+  expirationDate: true,
+  notes: true,
+  supplier: true,
   imageUrl: true,
 });
 
@@ -83,21 +85,25 @@ export const equipment = pgTable("equipment", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   type: text("type").notNull(),
+  capacity: decimal("capacity"),
+  unitOfMeasure: text("unit_of_measure"),
+  acquisitionDate: timestamp("acquisition_date"),
+  lastMaintenanceDate: timestamp("last_maintenance_date"),
+  maintenanceInterval: integer("maintenance_interval"),
   status: text("status").notNull(),
-  currentBatch: text("current_batch"),
-  utilization: integer("utilization"),
-  maintenanceStatus: text("maintenance_status"),
-  timeRemaining: text("time_remaining"),
+  notes: text("notes"),
 });
 
 export const insertEquipmentSchema = createInsertSchema(equipment).pick({
   name: true,
   type: true,
+  capacity: true,
+  unitOfMeasure: true,
+  acquisitionDate: true,
+  lastMaintenanceDate: true,
+  maintenanceInterval: true,
   status: true,
-  currentBatch: true,
-  utilization: true,
-  maintenanceStatus: true,
-  timeRemaining: true,
+  notes: true,
 });
 
 // Recipe model
@@ -105,25 +111,35 @@ export const recipes = pgTable("recipes", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   type: text("type").notNull(),
-  description: text("description").notNull(),
+  batchSize: decimal("batch_size").notNull(),
+  unitOfMeasure: text("unit_of_measure").notNull(),
+  originalGravity: decimal("original_gravity").notNull(),
+  finalGravity: decimal("final_gravity").notNull(),
   abv: decimal("abv").notNull(),
   ibu: integer("ibu").notNull(),
-  srm: decimal("srm").notNull(),
+  description: text("description").notNull(),
+  instructions: text("instructions").notNull(),
   ingredients: json("ingredients").notNull(),
-  instructions: json("instructions").notNull(),
   imageUrl: text("image_url"), // URL to recipe image or beauty shot
+  lastBrewed: timestamp("last_brewed"),
+  notes: text("notes"),
 });
 
 export const insertRecipeSchema = createInsertSchema(recipes).pick({
   name: true,
   type: true,
-  description: true,
+  batchSize: true,
+  unitOfMeasure: true,
+  originalGravity: true,
+  finalGravity: true,
   abv: true,
   ibu: true,
-  srm: true,
-  ingredients: true,
+  description: true,
   instructions: true,
+  ingredients: true,
   imageUrl: true,
+  lastBrewed: true,
+  notes: true,
 });
 
 // Brewing schedule model
