@@ -7,14 +7,14 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  email: text("email").notNull(),
+  name: text("name").notNull(),
   role: text("role").notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
-  email: true,
+  name: true,
   role: true,
 });
 
@@ -23,26 +23,24 @@ export const inventoryItems = pgTable("inventory_items", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   category: text("category").notNull(),
-  quantity: decimal("quantity").notNull(),
+  currentQuantity: decimal("current_quantity").notNull(),
+  minimumQuantity: decimal("minimum_quantity").notNull(),
   unit: text("unit").notNull(),
-  threshold: decimal("threshold").notNull(),
-  costPerUnit: decimal("cost_per_unit").notNull(),
-  expirationDate: timestamp("expiration_date"),
-  notes: text("notes"),
-  supplier: text("supplier"),
+  status: text("status").notNull(),
+  forecast: text("forecast").notNull(),
+  lastUpdated: timestamp("last_updated").notNull(),
   imageUrl: text("image_url"), // URL to image of the inventory item
 });
 
 export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick({
   name: true,
   category: true,
-  quantity: true,
+  currentQuantity: true,
+  minimumQuantity: true,
   unit: true,
-  threshold: true,
-  costPerUnit: true,
-  expirationDate: true,
-  notes: true,
-  supplier: true,
+  status: true,
+  forecast: true,
+  lastUpdated: true,
   imageUrl: true,
 });
 

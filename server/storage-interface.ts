@@ -1,11 +1,18 @@
 import { 
-  User, InsertUser,
-  InventoryItem, InsertInventoryItem,
-  IngredientSource, InsertIngredientSource,
-  Equipment, InsertEquipment,
-  Recipe, InsertRecipe,
-  BrewingSchedule, InsertBrewingSchedule,
-  IngredientPriceHistory, InsertIngredientPriceHistory
+  User, 
+  InsertUser, 
+  InventoryItem, 
+  InsertInventoryItem,
+  IngredientSource,
+  InsertIngredientSource,
+  Equipment,
+  InsertEquipment,
+  Recipe,
+  InsertRecipe,
+  BrewingSchedule,
+  InsertBrewingSchedule,
+  IngredientPriceHistory,
+  InsertIngredientPriceHistory
 } from "@shared/schema";
 
 export interface IStorage {
