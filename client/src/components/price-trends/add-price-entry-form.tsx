@@ -26,6 +26,11 @@ interface AddPriceEntryFormProps {
   defaultIngredientId?: number;
 }
 
+// The following is needed to fix TypeScript errors with null values in fields
+function ensureString(value: string | null | undefined): string {
+  return value ?? '';
+}
+
 export default function AddPriceEntryForm({ 
   ingredients, 
   onSuccess, 
@@ -57,10 +62,7 @@ export default function AddPriceEntryForm({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await apiRequest('/api/price-history', {
-        method: 'POST',
-        body: JSON.stringify(values),
-      });
+      await apiRequest('POST', '/api/price-history', values);
       
       // Reset the form
       form.reset({
@@ -178,7 +180,11 @@ export default function AddPriceEntryForm({
                 <FormItem>
                   <FormLabel>Supplier</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter supplier name" {...field} />
+                    <Input 
+                      placeholder="Enter supplier name" 
+                      {...field} 
+                      value={ensureString(field.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,7 +198,11 @@ export default function AddPriceEntryForm({
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Add notes about this price entry" {...field} />
+                    <Textarea 
+                      placeholder="Add notes about this price entry" 
+                      {...field} 
+                      value={ensureString(field.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
