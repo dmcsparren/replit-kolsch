@@ -313,7 +313,7 @@ export class DatabaseStorage implements IStorage {
         type: "kettle",
         status: "operational",
         maintenanceStatus: "good",
-        currentBatch: "Summer Kölsch",
+        currentBatch: "Summer Kolsch",
         timeRemaining: "1:30h",
         utilization: 80
       });

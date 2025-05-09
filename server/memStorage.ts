@@ -204,7 +204,7 @@ export class MemStorage implements IStorage {
         lastUpdated: new Date()
       },
       {
-        name: "Yeast - Kölsch",
+        name: "Yeast - Kolsch",
         category: "Yeast",
         currentQuantity: "24",
         minimumQuantity: "10",
@@ -282,7 +282,7 @@ export class MemStorage implements IStorage {
     // Create sample recipes
     const sampleRecipes: InsertRecipe[] = [
       {
-        name: "Summer Kölsch",
+        name: "Summer Kolsch",
         type: "Flagship",
         description: "Light, crisp and refreshing German-style ale perfect for summer.",
         abv: "4.8",
@@ -330,7 +330,7 @@ export class MemStorage implements IStorage {
     
     const sampleSchedules: InsertBrewingSchedule[] = [
       {
-        recipeName: "Summer Kölsch",
+        recipeName: "Summer Kolsch",
         batchNumber: "Batch #1242",
         startDate: today,
         endDate: new Date(today.getTime() + 6 * 60 * 60 * 1000), // 6 hours later
