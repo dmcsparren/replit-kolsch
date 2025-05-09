@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,6 +12,7 @@ import Recipes from "@/pages/recipes";
 import Reports from "@/pages/reports";
 import IngredientMap from "@/pages/ingredient-map";
 import PriceTrends from "@/pages/price-trends";
+import LandingPage from "@/pages/landing";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { useState, useEffect } from "react";
@@ -20,7 +21,22 @@ import ErrorBoundary from "@/components/error-boundary";
 
 function Router() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [location] = useLocation();
   
+  // Check if we're on the landing page
+  const isLandingPage = location === "/" || location === "/landing";
+  
+  // If we're on the landing page, don't show the app layout
+  if (isLandingPage) {
+    return (
+      <Switch>
+        <Route path="/" component={LandingPage} />
+        <Route path="/landing" component={LandingPage} />
+      </Switch>
+    );
+  }
+  
+  // Show the app layout for all other routes
   return (
     <div className="flex h-screen bg-neutral-100 overflow-hidden">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
@@ -30,7 +46,7 @@ function Router() {
         
         <main className="flex-1 overflow-y-auto p-4 scroll-container">
           <Switch>
-            <Route path="/" component={Dashboard} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/ingredients" component={Ingredients} />
             <Route path="/ingredient-map" component={IngredientMap} />
