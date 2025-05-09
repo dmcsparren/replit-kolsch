@@ -116,7 +116,7 @@ export const recipes = pgTable("recipes", {
   abv: decimal("abv").notNull(),
   ibu: integer("ibu").notNull(),
   description: text("description").notNull(),
-  instructions: text("instructions").notNull(),
+  instructions: json("instructions").notNull(),
   ingredients: json("ingredients").notNull(),
   imageUrl: text("image_url"), // URL to recipe image or beauty shot
   lastBrewed: timestamp("last_brewed"),

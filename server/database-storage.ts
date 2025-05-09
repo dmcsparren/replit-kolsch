@@ -333,7 +333,11 @@ export class DatabaseStorage implements IStorage {
         abv: "5.0",
         ibu: 25,
         description: "A crisp, clean traditional German Kölsch.",
-        instructions: "Mash at 65°C for 60 min. Boil for 60 min with hop additions at 60 and 15 min. Ferment at 15°C for two weeks, then lager for two weeks at 2°C.",
+        instructions: [
+          "Mash at 65°C for 60 min.",
+          "Boil for 60 min with hop additions at 60 and 15 min.", 
+          "Ferment at 15°C for two weeks, then lager for two weeks at 2°C."
+        ],
         ingredients: [
           { name: "Pilsner Malt", amount: 90, unit: "kg" },
           { name: "Vienna Malt", amount: 10, unit: "kg" },
