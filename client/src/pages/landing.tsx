@@ -66,9 +66,17 @@ export default function LandingPage() {
             <a href="#demo" className="text-sm font-medium hover:text-primary">Request Demo</a>
             <a href="#contact" className="text-sm font-medium hover:text-primary">Contact</a>
           </nav>
-          <Button onClick={() => navigate("/dashboard")}>
-            Enter App
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = "/api/login"}
+            >
+              Log In
+            </Button>
+            <Button onClick={() => window.location.href = "/api/login"}>
+              Sign Up
+            </Button>
+          </div>
         </div>
       </header>
       
@@ -85,7 +93,7 @@ export default function LandingPage() {
                 track ingredients, manage equipment, and schedule your brewing process with ease.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" onClick={() => navigate("/dashboard")}>
+                <Button size="lg" onClick={() => window.location.href = "/api/login"}>
                   Get Started <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => window.location.href = "#demo"}>
