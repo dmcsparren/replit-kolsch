@@ -21,14 +21,15 @@ import { useToast } from "@/hooks/use-toast";
 import ErrorBoundary from "@/components/error-boundary";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [location] = useLocation();
   
   // Check if we're on the landing page
   const isLandingPage = location === "/" || location === "/landing";
   
-  // If we're on the landing page, don't show the app layout
-  if (isLandingPage) {
+  // Show landing page for unauthenticated users or when on landing page
+  if (isLoading || !isAuthenticated || isLandingPage) {
     return (
       <Switch>
         <Route path="/" component={LandingPage} />

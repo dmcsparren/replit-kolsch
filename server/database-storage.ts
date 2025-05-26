@@ -273,13 +273,7 @@ export class DatabaseStorage implements IStorage {
 
       console.log("Initializing database with sample data...");
 
-      // Add example user
-      await this.createUser({
-        username: "admin",
-        password: "admin123",
-        name: "Administrator",
-        role: "admin",
-      });
+      // User creation now handled by authentication system
 
       // Add example inventory items
       const now = new Date();
