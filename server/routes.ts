@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
+import session from "express-session";
 import { 
   insertInventoryItemSchema, 
   insertEquipmentSchema, 
@@ -15,6 +16,47 @@ import {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // prefix all routes with /api
+  
+  // Setup session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'kolsch-brewery-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+  
+  // Authentication status endpoint
+  app.get("/api/auth/user", async (req: Request, res: Response) => {
+    const session = req.session as any;
+    if (session.userId) {
+      try {
+        const user = await storage.getUser(session.userId);
+        if (user) {
+          const brewery = await storage.getBrewery(user.breweryId!);
+          res.json({
+            user: {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+              breweryId: user.breweryId
+            },
+            brewery
+          });
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+    res.json(null);
+  });
   
   // Signup route for new brewery accounts
   app.post("/api/signup", async (req: Request, res: Response) => {
@@ -100,6 +142,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
+      // Create session
+      const session = req.session as any;
+      session.userId = user.id;
+
       // Get brewery information
       const brewery = await storage.getBrewery(user.breweryId!);
 
@@ -120,6 +166,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
     }
+  });
+  
+  // Logout endpoint
+  app.post("/api/logout", async (req: Request, res: Response) => {
+    const session = req.session as any;
+    session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Could not log out" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
   });
   
   // Inventory routes
