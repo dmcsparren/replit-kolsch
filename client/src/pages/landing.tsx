@@ -73,7 +73,7 @@ export default function LandingPage() {
             >
               Log In
             </Button>
-            <Button onClick={() => window.location.href = "/api/login"}>
+            <Button onClick={() => navigate("/signup")}>
               Sign Up
             </Button>
           </div>

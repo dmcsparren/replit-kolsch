@@ -14,6 +14,7 @@ import Reports from "@/pages/reports";
 import IngredientMap from "@/pages/ingredient-map";
 import PriceTrends from "@/pages/price-trends";
 import LandingPage from "@/pages/landing";
+import SignupPage from "@/pages/signup";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import { useState, useEffect } from "react";
@@ -34,6 +35,7 @@ function Router() {
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/landing" component={LandingPage} />
+        <Route path="/signup" component={SignupPage} />
       </Switch>
     );
   }
