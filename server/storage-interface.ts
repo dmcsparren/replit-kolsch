@@ -1,6 +1,9 @@
 import { 
   User, 
-  InsertUser, 
+  InsertUser,
+  UpsertUser,
+  Brewery,
+  InsertBrewery,
   InventoryItem, 
   InsertInventoryItem,
   IngredientSource,
@@ -19,6 +22,16 @@ export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  
+  // New user authentication operations
+  createUser(user: any): Promise<User>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  
+  // Brewery operations
+  createBrewery(brewery: any): Promise<Brewery>;
+  getBrewery(id: string): Promise<Brewery | undefined>;
+  initializeBreweryData(breweryId: string): Promise<void>;
   
   // Inventory operations
   getInventoryItems(): Promise<InventoryItem[]>;

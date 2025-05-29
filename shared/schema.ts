@@ -43,6 +43,61 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Add inventory brewery relationship
+export const inventoryItems = pgTable("inventory_items", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  name: varchar("name").notNull(),
+  quantity: integer("quantity").notNull(),
+  unit: varchar("unit").notNull(),
+  location: varchar("location"),
+  expirationDate: timestamp("expiration_date"),
+  cost: numeric("cost", { precision: 10, scale: 2 }),
+  supplier: varchar("supplier"),
+  barcode: varchar("barcode"),
+  category: varchar("category"),
+  notes: text("notes"),
+  imageUrl: varchar("image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Update other tables to include brewery relationship
+export const equipment = pgTable("equipment", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(),
+  capacity: varchar("capacity"),
+  status: varchar("status").notNull().default("available"),
+  location: varchar("location"),
+  purchaseDate: timestamp("purchase_date"),
+  lastMaintenance: timestamp("last_maintenance"),
+  nextMaintenance: timestamp("next_maintenance"),
+  notes: text("notes"),
+  imageUrl: varchar("image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const recipes = pgTable("recipes", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  name: varchar("name").notNull(),
+  style: varchar("style").notNull(),
+  batchSize: numeric("batch_size", { precision: 10, scale: 2 }).notNull(),
+  targetAbv: numeric("target_abv", { precision: 4, scale: 2 }),
+  targetIbu: integer("target_ibu"),
+  ingredients: jsonb("ingredients").notNull(),
+  instructions: text("instructions").notNull(),
+  fermentationTemp: varchar("fermentation_temp"),
+  fermentationTime: varchar("fermentation_time"),
+  notes: text("notes"),
+  imageUrl: varchar("image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users);
 export const insertBrewerySchema = createInsertSchema(breweries);
 

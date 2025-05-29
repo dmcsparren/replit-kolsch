@@ -2,6 +2,8 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import { randomUUID } from "crypto";
+import bcrypt from "bcrypt";
 import { 
   insertInventoryItemSchema, 
   insertEquipmentSchema, 
@@ -13,6 +15,70 @@ import {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // prefix all routes with /api
+  
+  // Signup route for new brewery accounts
+  app.post("/api/signup", async (req: Request, res: Response) => {
+    try {
+      const { user, brewery } = req.body;
+
+      // Validate required user fields
+      if (!user.firstName || !user.lastName || !user.email || !user.username || !user.password) {
+        return res.status(400).json({ message: "All user fields are required" });
+      }
+
+      // Validate required brewery fields
+      if (!brewery.name || !brewery.type || !brewery.location) {
+        return res.status(400).json({ message: "Brewery name, type, and location are required" });
+      }
+
+      // Generate unique brewery GUID
+      const breweryId = randomUUID();
+      const userId = randomUUID();
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+
+      // Create brewery account first
+      const newBrewery = await storage.createBrewery({
+        id: breweryId,
+        name: brewery.name,
+        type: brewery.type,
+        location: brewery.location,
+        foundedYear: brewery.foundedYear || null,
+        website: brewery.website || null,
+        phone: brewery.phone || null,
+        brewingCapacity: brewery.brewingCapacity || null,
+        specialties: brewery.specialties || null,
+      });
+
+      // Create user account linked to brewery
+      const newUser = await storage.createUser({
+        id: userId,
+        username: user.username,
+        email: user.email,
+        password: hashedPassword,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        breweryId: breweryId,
+        role: user.role || 'owner',
+      });
+
+      // Initialize brewery data
+      await storage.initializeBreweryData(breweryId);
+
+      res.json({ 
+        message: "Account created successfully",
+        brewery: newBrewery,
+        user: { ...newUser, password: undefined } // Don't return password
+      });
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      if (error.message.includes("unique") || error.message.includes("duplicate")) {
+        return res.status(400).json({ message: "Username or email already exists" });
+      }
+      res.status(500).json({ message: "Failed to create account" });
+    }
+  });
   
   // Inventory routes
   app.get("/api/inventory", async (_req: Request, res: Response) => {
