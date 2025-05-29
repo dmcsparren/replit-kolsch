@@ -63,8 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role || 'owner',
       });
 
-      // Initialize brewery data
-      await storage.initializeBreweryData(breweryId);
+      // Brewery account created successfully
 
       res.json({ 
         message: "Account created successfully",

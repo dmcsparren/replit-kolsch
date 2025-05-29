@@ -85,71 +85,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async initializeBreweryData(breweryId: string): Promise<void> {
-    // Initialize sample data for the new brewery
-    console.log(`Initializing data for brewery: ${breweryId}`);
-    
-    // Add sample inventory items for the brewery
-    await db.insert(inventoryItems).values([
-      {
-        breweryId,
-        name: "Pale Malt",
-        quantity: 50,
-        unit: "lbs",
-        category: "Grain",
-        location: "Storage Room A",
-        supplier: "Local Maltster",
-        cost: "75.00"
-      },
-      {
-        breweryId,
-        name: "Cascade Hops",
-        quantity: 2,
-        unit: "lbs",
-        category: "Hops",
-        location: "Cold Storage",
-        supplier: "Hop Farm Co",
-        cost: "32.00"
-      }
-    ]);
-
-    // Add sample equipment for the brewery
-    await db.insert(equipment).values([
-      {
-        breweryId,
-        name: "Mash Tun",
-        type: "Vessel",
-        capacity: "10 BBL",
-        status: "available",
-        location: "Brew Deck"
-      },
-      {
-        breweryId,
-        name: "Fermentation Tank #1",
-        type: "Fermenter",
-        capacity: "7 BBL",
-        status: "available",
-        location: "Cellar"
-      }
-    ]);
-
-    // Add sample recipe for the brewery
-    await db.insert(recipes).values([
-      {
-        breweryId,
-        name: "House IPA",
-        style: "American IPA",
-        batchSize: 7.0,
-        targetAbv: 6.2,
-        targetIbu: 65,
-        ingredients: [
-          { name: "Pale Malt", amount: 12, unit: "lbs" },
-          { name: "Cascade Hops", amount: 2, unit: "oz" }
-        ],
-        instructions: "Standard IPA brewing process with 60-minute boil and dry hopping.",
-        fermentationTemp: "65-68°F",
-        fermentationTime: "14 days"
-      }
-    ]);
+    // Initialize brewery account - data will be added by users through the interface
+    console.log(`Brewery ${breweryId} initialized successfully`);
   }
 
   // Inventory operations filtered by brewery
