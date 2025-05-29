@@ -1,13 +1,12 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle, Grape } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, ArrowRight, CheckCircle } from "lucide-react";
-import { useLocation } from "wouter";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -118,19 +117,18 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Building2 className="h-12 w-12 text-amber-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Brewery Profile</h1>
-          <p className="text-gray-600">Help us customize kolsch for your brewery's unique needs</p>
-        </div>
-
-        <Card className="shadow-xl border-0">
-          <CardHeader className="text-center bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-t-lg">
-            <CardTitle className="text-2xl">Brewery Information</CardTitle>
-            <CardDescription className="text-amber-100">
-              Tell us about your brewery to get the most out of kolsch
+        <Card className="border-amber-200 shadow-xl">
+          <CardHeader className="text-center pb-6">
+            <div className="flex justify-center mb-4">
+              <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-full">
+                <Grape className="h-8 w-8 text-white" />
+              </div>
+            </div>
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent">
+              Create Your Brewery Account
+            </CardTitle>
+            <CardDescription className="text-lg text-gray-600 mt-2">
+              Join kolsch and take control of your brewery operations
             </CardDescription>
           </CardHeader>
           
@@ -318,98 +316,6 @@ export default function SignupPage() {
                 </div>
               </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="breweryType">Brewery Type *</Label>
-                  <Select onValueChange={(value) => handleInputChange("breweryType", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select brewery type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="nano">Nano Brewery (under 3 BBL)</SelectItem>
-                      <SelectItem value="micro">Micro Brewery (3-15 BBL)</SelectItem>
-                      <SelectItem value="small">Small Brewery (15-30 BBL)</SelectItem>
-                      <SelectItem value="regional">Regional Brewery (30+ BBL)</SelectItem>
-                      <SelectItem value="contract">Contract Brewery</SelectItem>
-                      <SelectItem value="brewpub">Brewpub</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location *</Label>
-                  <Input
-                    id="location"
-                    placeholder="City, State/Province"
-                    value={formData.location}
-                    onChange={(e) => handleInputChange("location", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="foundedYear">Founded Year</Label>
-                  <Input
-                    id="foundedYear"
-                    type="number"
-                    placeholder="2024"
-                    min="1900"
-                    max={new Date().getFullYear()}
-                    value={formData.foundedYear}
-                    onChange={(e) => handleInputChange("foundedYear", e.target.value)}
-                  />
-                </div>
-              </div>
-
-
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="website">Website</Label>
-                  <Input
-                    id="website"
-                    type="url"
-                    placeholder="https://yourbrewery.com"
-                    value={formData.website}
-                    onChange={(e) => handleInputChange("website", e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="(555) 123-4567"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="brewingCapacity">Annual Brewing Capacity</Label>
-                  <Input
-                    id="brewingCapacity"
-                    placeholder="e.g., 1000 BBL"
-                    value={formData.brewingCapacity}
-                    onChange={(e) => handleInputChange("brewingCapacity", e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="specialties">Beer Specialties</Label>
-                  <Input
-                    id="specialties"
-                    placeholder="e.g., IPAs, Lagers, Sours"
-                    value={formData.specialties}
-                    onChange={(e) => handleInputChange("specialties", e.target.value)}
-                  />
-                </div>
-              </div>
-
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-amber-600 mt-0.5" />
@@ -431,25 +337,19 @@ export default function SignupPage() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isLoading || !formData.breweryName || !formData.breweryType || !formData.location}
+                  disabled={isLoading || !formData.firstName || !formData.lastName || !formData.email || !formData.username || !formData.password || !formData.breweryName || !formData.breweryType || !formData.location}
                   className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800"
                 >
                   {isLoading ? (
-                    "Creating Profile..."
+                    "Creating Account..."
                   ) : (
-                    <>
-                      Complete Setup <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
+                    "Create Brewery Account"
                   )}
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
-
-        <div className="text-center mt-6 text-sm text-gray-500">
-          <p>Need help? Contact our support team at support@kolsch-brewery.com</p>
-        </div>
       </div>
     </div>
   );
