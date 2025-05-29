@@ -98,7 +98,7 @@ export class DatabaseStorage implements IStorage {
         category: "Grain",
         location: "Storage Room A",
         supplier: "Local Maltster",
-        cost: 2.50
+        cost: "75.00"
       },
       {
         breweryId,
@@ -108,7 +108,7 @@ export class DatabaseStorage implements IStorage {
         category: "Hops",
         location: "Cold Storage",
         supplier: "Hop Farm Co",
-        cost: 15.00
+        cost: "32.00"
       }
     ]);
 
