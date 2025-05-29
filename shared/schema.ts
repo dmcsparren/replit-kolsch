@@ -13,21 +13,43 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User model for Replit Auth
+// Brewery accounts table
+export const breweries = pgTable("breweries", {
+  id: varchar("id").primaryKey().notNull(), // Unique GUID
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(),
+  location: varchar("location").notNull(),
+  foundedYear: integer("founded_year"),
+  website: varchar("website"),
+  phone: varchar("phone"),
+  brewingCapacity: varchar("brewing_capacity"),
+  specialties: varchar("specialties"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Users table with brewery association
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
+  username: varchar("username").notNull().unique(),
+  email: varchar("email").notNull().unique(),
+  password: varchar("password").notNull(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  role: varchar("role").notNull().default("member"), // owner, admin, member
   profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertUserSchema = createInsertSchema(users);
+export const insertBrewerySchema = createInsertSchema(breweries);
 
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type Brewery = typeof breweries.$inferSelect;
+export type InsertBrewery = z.infer<typeof insertBrewerySchema>;
 
 // Inventory item model
 export const inventoryItems = pgTable("inventory_items", {
