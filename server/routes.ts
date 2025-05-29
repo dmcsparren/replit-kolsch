@@ -80,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Login route for existing users
-  app.post("/api/auth/login", async (req: Request, res: Response) => {
+  app.post("/api/login", async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
 
