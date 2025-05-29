@@ -1,14 +1,15 @@
-import { 
-  users, 
-  inventoryItems, 
-  ingredientSources, 
-  equipment, 
-  recipes, 
-  brewingSchedules, 
+import {
+  users,
+  breweries,
+  inventoryItems,
+  ingredientSources,
+  equipment,
+  recipes,
+  brewingSchedules,
   ingredientPriceHistory,
-  type User, 
-  type InsertUser, 
-  type InventoryItem, 
+  type User,
+  type Brewery,
+  type InventoryItem,
   type InsertInventoryItem,
   type IngredientSource,
   type InsertIngredientSource,
@@ -21,45 +22,145 @@ import {
   type IngredientPriceHistory,
   type InsertIngredientPriceHistory
 } from "@shared/schema";
-
 import { IStorage } from "./storage-interface";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
   constructor() {
-    this.initializeData();
+    // Initialize with empty constructor - data initialization happens in routes
   }
 
-
-
-  // User operations
-  async getUser(id: number): Promise<User | undefined> {
+  // User operations for authentication
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return user;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async upsertUser(userData: any): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
 
-  // Inventory operations
+  async createUser(userData: any): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .returning();
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  // Brewery operations
+  async createBrewery(breweryData: any): Promise<Brewery> {
+    const [brewery] = await db
+      .insert(breweries)
+      .values(breweryData)
+      .returning();
+    return brewery;
+  }
+
+  async getBrewery(id: string): Promise<Brewery | undefined> {
+    const [brewery] = await db.select().from(breweries).where(eq(breweries.id, id));
+    return brewery;
+  }
+
+  async initializeBreweryData(breweryId: string): Promise<void> {
+    // Initialize sample data for the new brewery
+    console.log(`Initializing data for brewery: ${breweryId}`);
+    
+    // Add sample inventory items for the brewery
+    await db.insert(inventoryItems).values([
+      {
+        breweryId,
+        name: "Pale Malt",
+        quantity: 50,
+        unit: "lbs",
+        category: "Grain",
+        location: "Storage Room A",
+        supplier: "Local Maltster",
+        cost: 2.50
+      },
+      {
+        breweryId,
+        name: "Cascade Hops",
+        quantity: 2,
+        unit: "lbs",
+        category: "Hops",
+        location: "Cold Storage",
+        supplier: "Hop Farm Co",
+        cost: 15.00
+      }
+    ]);
+
+    // Add sample equipment for the brewery
+    await db.insert(equipment).values([
+      {
+        breweryId,
+        name: "Mash Tun",
+        type: "Vessel",
+        capacity: "10 BBL",
+        status: "available",
+        location: "Brew Deck"
+      },
+      {
+        breweryId,
+        name: "Fermentation Tank #1",
+        type: "Fermenter",
+        capacity: "7 BBL",
+        status: "available",
+        location: "Cellar"
+      }
+    ]);
+
+    // Add sample recipe for the brewery
+    await db.insert(recipes).values([
+      {
+        breweryId,
+        name: "House IPA",
+        style: "American IPA",
+        batchSize: 7.0,
+        targetAbv: 6.2,
+        targetIbu: 65,
+        ingredients: [
+          { name: "Pale Malt", amount: 12, unit: "lbs" },
+          { name: "Cascade Hops", amount: 2, unit: "oz" }
+        ],
+        instructions: "Standard IPA brewing process with 60-minute boil and dry hopping.",
+        fermentationTemp: "65-68°F",
+        fermentationTime: "14 days"
+      }
+    ]);
+  }
+
+  // Inventory operations filtered by brewery
   async getInventoryItems(): Promise<InventoryItem[]> {
-    return await db.select().from(inventoryItems);
+    const items = await db.select().from(inventoryItems);
+    return items;
   }
 
   async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
     const [item] = await db.select().from(inventoryItems).where(eq(inventoryItems.id, id));
-    return item || undefined;
+    return item;
   }
 
   async createInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
@@ -73,28 +174,26 @@ export class DatabaseStorage implements IStorage {
   async updateInventoryItem(id: number, item: Partial<InventoryItem>): Promise<InventoryItem | undefined> {
     const [updatedItem] = await db
       .update(inventoryItems)
-      .set(item)
+      .set({ ...item, updatedAt: new Date() })
       .where(eq(inventoryItems.id, id))
       .returning();
-    return updatedItem || undefined;
+    return updatedItem;
   }
 
   async deleteInventoryItem(id: number): Promise<boolean> {
-    const result = await db
-      .delete(inventoryItems)
-      .where(eq(inventoryItems.id, id))
-      .returning({ id: inventoryItems.id });
-    return result.length > 0;
+    const result = await db.delete(inventoryItems).where(eq(inventoryItems.id, id));
+    return result.rowCount > 0;
   }
 
   // Ingredient source operations
   async getAllIngredientSources(): Promise<IngredientSource[]> {
-    return await db.select().from(ingredientSources);
+    const sources = await db.select().from(ingredientSources);
+    return sources;
   }
 
   async getIngredientSource(id: number): Promise<IngredientSource | undefined> {
     const [source] = await db.select().from(ingredientSources).where(eq(ingredientSources.id, id));
-    return source || undefined;
+    return source;
   }
 
   async createIngredientSource(source: InsertIngredientSource): Promise<IngredientSource> {
@@ -108,63 +207,59 @@ export class DatabaseStorage implements IStorage {
   async updateIngredientSource(id: number, source: Partial<IngredientSource>): Promise<IngredientSource | undefined> {
     const [updatedSource] = await db
       .update(ingredientSources)
-      .set(source)
+      .set({ ...source, updatedAt: new Date() })
       .where(eq(ingredientSources.id, id))
       .returning();
-    return updatedSource || undefined;
+    return updatedSource;
   }
 
   async deleteIngredientSource(id: number): Promise<boolean> {
-    const result = await db
-      .delete(ingredientSources)
-      .where(eq(ingredientSources.id, id))
-      .returning({ id: ingredientSources.id });
-    return result.length > 0;
+    const result = await db.delete(ingredientSources).where(eq(ingredientSources.id, id));
+    return result.rowCount > 0;
   }
 
   // Equipment operations
   async getAllEquipment(): Promise<Equipment[]> {
-    return await db.select().from(equipment);
+    const equipmentList = await db.select().from(equipment);
+    return equipmentList;
   }
 
   async getEquipment(id: number): Promise<Equipment | undefined> {
-    const [item] = await db.select().from(equipment).where(eq(equipment.id, id));
-    return item || undefined;
+    const [equipmentItem] = await db.select().from(equipment).where(eq(equipment.id, id));
+    return equipmentItem;
   }
 
   async createEquipment(equipmentItem: InsertEquipment): Promise<Equipment> {
-    const [newItem] = await db
+    const [newEquipment] = await db
       .insert(equipment)
       .values(equipmentItem)
       .returning();
-    return newItem;
+    return newEquipment;
   }
 
   async updateEquipment(id: number, equipmentItem: Partial<Equipment>): Promise<Equipment | undefined> {
-    const [updatedItem] = await db
+    const [updatedEquipment] = await db
       .update(equipment)
-      .set(equipmentItem)
+      .set({ ...equipmentItem, updatedAt: new Date() })
       .where(eq(equipment.id, id))
       .returning();
-    return updatedItem || undefined;
+    return updatedEquipment;
   }
 
   async deleteEquipment(id: number): Promise<boolean> {
-    const result = await db
-      .delete(equipment)
-      .where(eq(equipment.id, id))
-      .returning({ id: equipment.id });
-    return result.length > 0;
+    const result = await db.delete(equipment).where(eq(equipment.id, id));
+    return result.rowCount > 0;
   }
 
   // Recipe operations
   async getAllRecipes(): Promise<Recipe[]> {
-    return await db.select().from(recipes);
+    const recipeList = await db.select().from(recipes);
+    return recipeList;
   }
 
   async getRecipe(id: number): Promise<Recipe | undefined> {
     const [recipe] = await db.select().from(recipes).where(eq(recipes.id, id));
-    return recipe || undefined;
+    return recipe;
   }
 
   async createRecipe(recipe: InsertRecipe): Promise<Recipe> {
@@ -178,28 +273,26 @@ export class DatabaseStorage implements IStorage {
   async updateRecipe(id: number, recipe: Partial<Recipe>): Promise<Recipe | undefined> {
     const [updatedRecipe] = await db
       .update(recipes)
-      .set(recipe)
+      .set({ ...recipe, updatedAt: new Date() })
       .where(eq(recipes.id, id))
       .returning();
-    return updatedRecipe || undefined;
+    return updatedRecipe;
   }
 
   async deleteRecipe(id: number): Promise<boolean> {
-    const result = await db
-      .delete(recipes)
-      .where(eq(recipes.id, id))
-      .returning({ id: recipes.id });
-    return result.length > 0;
+    const result = await db.delete(recipes).where(eq(recipes.id, id));
+    return result.rowCount > 0;
   }
 
   // Brewing schedule operations
   async getAllBrewingSchedules(): Promise<BrewingSchedule[]> {
-    return await db.select().from(brewingSchedules);
+    const schedules = await db.select().from(brewingSchedules);
+    return schedules;
   }
 
   async getBrewingSchedule(id: number): Promise<BrewingSchedule | undefined> {
     const [schedule] = await db.select().from(brewingSchedules).where(eq(brewingSchedules.id, id));
-    return schedule || undefined;
+    return schedule;
   }
 
   async createBrewingSchedule(schedule: InsertBrewingSchedule): Promise<BrewingSchedule> {
@@ -213,30 +306,26 @@ export class DatabaseStorage implements IStorage {
   async updateBrewingSchedule(id: number, schedule: Partial<BrewingSchedule>): Promise<BrewingSchedule | undefined> {
     const [updatedSchedule] = await db
       .update(brewingSchedules)
-      .set(schedule)
+      .set({ ...schedule, updatedAt: new Date() })
       .where(eq(brewingSchedules.id, id))
       .returning();
-    return updatedSchedule || undefined;
+    return updatedSchedule;
   }
 
   async deleteBrewingSchedule(id: number): Promise<boolean> {
-    const result = await db
-      .delete(brewingSchedules)
-      .where(eq(brewingSchedules.id, id))
-      .returning({ id: brewingSchedules.id });
-    return result.length > 0;
+    const result = await db.delete(brewingSchedules).where(eq(brewingSchedules.id, id));
+    return result.rowCount > 0;
   }
 
-  // Ingredient price history operations
+  // Price history operations
   async getPriceHistoryForIngredient(ingredientId: number): Promise<IngredientPriceHistory[]> {
-    return await db
-      .select()
-      .from(ingredientPriceHistory)
-      .where(eq(ingredientPriceHistory.ingredientId, ingredientId));
+    const history = await db.select().from(ingredientPriceHistory).where(eq(ingredientPriceHistory.ingredientId, ingredientId));
+    return history;
   }
 
   async getAllPriceHistory(): Promise<IngredientPriceHistory[]> {
-    return await db.select().from(ingredientPriceHistory);
+    const history = await db.select().from(ingredientPriceHistory);
+    return history;
   }
 
   async addPriceHistoryEntry(entry: InsertIngredientPriceHistory): Promise<IngredientPriceHistory> {
@@ -253,122 +342,11 @@ export class DatabaseStorage implements IStorage {
       .set(entry)
       .where(eq(ingredientPriceHistory.id, id))
       .returning();
-    return updatedEntry || undefined;
+    return updatedEntry;
   }
 
   async deletePriceHistoryEntry(id: number): Promise<boolean> {
-    const result = await db
-      .delete(ingredientPriceHistory)
-      .where(eq(ingredientPriceHistory.id, id))
-      .returning({ id: ingredientPriceHistory.id });
-    return result.length > 0;
-  }
-
-  // Initialize data for first-time use
-  async initializeData() {
-    try {
-      // Check if we need to seed the database
-      const userCount = await db.select().from(users);
-      if (userCount.length > 0) {
-        return; // Database is already populated
-      }
-
-      console.log("Initializing database with sample data...");
-
-      // User creation now handled by authentication system
-
-      // Add example inventory items
-      const now = new Date();
-      await this.createInventoryItem({
-        name: "Cascade Hops",
-        category: "Hops",
-        currentQuantity: "25",
-        minimumQuantity: "5",
-        unit: "kg",
-        status: "In Stock",
-        forecast: "Stable",
-        lastUpdated: now,
-        imageUrl: null
-      });
-
-      await this.createInventoryItem({
-        name: "Pilsner Malt",
-        category: "Grain",
-        currentQuantity: "200",
-        minimumQuantity: "50",
-        unit: "kg",
-        status: "In Stock",
-        forecast: "Stable",
-        lastUpdated: now,
-        imageUrl: null
-      });
-
-      // Add example equipment
-      await this.createEquipment({
-        name: "Brew Kettle #1",
-        type: "kettle",
-        status: "operational",
-        maintenanceStatus: "good",
-        currentBatch: "Summer Kolsch",
-        timeRemaining: "1:30h",
-        utilization: 80
-      });
-
-      await this.createEquipment({
-        name: "Fermenter Tank A",
-        type: "fermenter",
-        status: "operational",
-        maintenanceStatus: "good",
-        currentBatch: "Vienna Lager",
-        timeRemaining: "3 days",
-        utilization: 75
-      });
-
-      // Add example recipe
-      await this.createRecipe({
-        name: "Summer Kolsch",
-        type: "Kolsch",
-        batchSize: "500",
-        unitOfMeasure: "L",
-        originalGravity: "1.048",
-        finalGravity: "1.010",
-        abv: "5.0",
-        ibu: 25,
-        description: "A crisp, clean traditional German Kolsch.",
-        instructions: [
-          "Mash at 65°C for 60 min.",
-          "Boil for 60 min with hop additions at 60 and 15 min.", 
-          "Ferment at 15°C for two weeks, then lager for two weeks at 2°C."
-        ],
-        ingredients: [
-          { name: "Pilsner Malt", amount: 90, unit: "kg" },
-          { name: "Vienna Malt", amount: 10, unit: "kg" },
-          { name: "Hallertau Hops", amount: 800, unit: "g" },
-          { name: "Kolsch Yeast", amount: 4, unit: "packs" }
-        ],
-        imageUrl: null,
-        lastBrewed: null,
-        notes: "A crowd favorite in summer months."
-      });
-
-      // Add example brew schedule
-      const startDate = new Date();
-      startDate.setHours(10, 0, 0, 0);
-      const endDate = new Date();
-      endDate.setHours(16, 0, 0, 0);
-
-      await this.createBrewingSchedule({
-        recipeName: "Summer Kolsch",
-        batchNumber: "Batch #4327",
-        startDate: startDate,
-        endDate: endDate,
-        status: "In progress",
-        equipmentId: 1
-      });
-
-      console.log("Database initialization complete.");
-    } catch (error) {
-      console.error("Error initializing database:", error);
-    }
+    const result = await db.delete(ingredientPriceHistory).where(eq(ingredientPriceHistory.id, id));
+    return result.rowCount > 0;
   }
 }
