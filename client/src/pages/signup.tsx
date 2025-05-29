@@ -133,16 +133,7 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Brewery Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Tell us about your brewery's story, mission, and what makes you unique..."
-                  className="min-h-[100px]"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                />
-              </div>
+
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
