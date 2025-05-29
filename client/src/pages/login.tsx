@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Grape, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 export default function LoginPage() {
   const [, navigate] = useLocation();
@@ -52,6 +53,9 @@ export default function LoginPage() {
       }
 
       const result = await response.json();
+      
+      // Invalidate the auth query to refresh user state
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
       toast({
         title: "Welcome back!",
