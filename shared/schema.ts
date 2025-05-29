@@ -1,8 +1,20 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, json, varchar, jsonb, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  jsonb,
+  index,
+  serial,
+  integer,
+  decimal,
+  json,
+  numeric
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Session storage table for Replit Auth
+// Session storage table (required for Replit Auth)
 export const sessions = pgTable(
   "sessions",
   {
@@ -13,7 +25,7 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// Brewery accounts table
+// Brewery accounts table with unique GUID
 export const breweries = pgTable("breweries", {
   id: varchar("id").primaryKey().notNull(), // Unique GUID
   name: varchar("name").notNull(),
@@ -28,7 +40,7 @@ export const breweries = pgTable("breweries", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Users table with brewery association
+// Users table with brewery association and required fields
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
   username: varchar("username").notNull().unique(),
@@ -43,7 +55,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Add inventory brewery relationship
+// Inventory items with brewery relationship
 export const inventoryItems = pgTable("inventory_items", {
   id: serial("id").primaryKey(),
   breweryId: varchar("brewery_id").references(() => breweries.id),
@@ -62,7 +74,24 @@ export const inventoryItems = pgTable("inventory_items", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Update other tables to include brewery relationship
+// Ingredient sources with brewery relationship
+export const ingredientSources = pgTable("ingredient_sources", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(),
+  supplier: varchar("supplier").notNull(),
+  location: varchar("location").notNull(),
+  contact: varchar("contact"),
+  rating: integer("rating"),
+  notes: text("notes"),
+  latitude: numeric("latitude", { precision: 10, scale: 8 }),
+  longitude: numeric("longitude", { precision: 11, scale: 8 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Equipment with brewery relationship
 export const equipment = pgTable("equipment", {
   id: serial("id").primaryKey(),
   breweryId: varchar("brewery_id").references(() => breweries.id),
@@ -80,6 +109,7 @@ export const equipment = pgTable("equipment", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Recipes with brewery relationship
 export const recipes = pgTable("recipes", {
   id: serial("id").primaryKey(),
   breweryId: varchar("brewery_id").references(() => breweries.id),
@@ -98,185 +128,120 @@ export const recipes = pgTable("recipes", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Brewing schedules with brewery relationship
+export const brewingSchedules = pgTable("brewing_schedules", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  recipeId: integer("recipe_id").references(() => recipes.id),
+  equipmentId: integer("equipment_id").references(() => equipment.id),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  status: varchar("status").notNull().default("scheduled"),
+  batchSize: numeric("batch_size", { precision: 10, scale: 2 }),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Price history with brewery relationship
+export const ingredientPriceHistory = pgTable("ingredient_price_history", {
+  id: serial("id").primaryKey(),
+  breweryId: varchar("brewery_id").references(() => breweries.id),
+  ingredientId: integer("ingredient_id").references(() => inventoryItems.id),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  supplier: varchar("supplier"),
+  date: timestamp("date").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Schema validation
 export const insertUserSchema = createInsertSchema(users);
 export const insertBrewerySchema = createInsertSchema(breweries);
-
-export type UpsertUser = typeof users.$inferInsert;
-export type User = typeof users.$inferSelect;
-export type Brewery = typeof breweries.$inferSelect;
-export type InsertBrewery = z.infer<typeof insertBrewerySchema>;
-
-// Inventory item model
-export const inventoryItems = pgTable("inventory_items", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  category: text("category").notNull(),
-  currentQuantity: decimal("current_quantity").notNull(),
-  minimumQuantity: decimal("minimum_quantity").notNull(),
-  unit: text("unit").notNull(),
-  status: text("status").notNull(),
-  forecast: text("forecast").notNull(),
-  lastUpdated: timestamp("last_updated").notNull(),
-  imageUrl: text("image_url"), // URL to image of the inventory item
-});
-
 export const insertInventoryItemSchema = createInsertSchema(inventoryItems).pick({
   name: true,
-  category: true,
-  currentQuantity: true,
-  minimumQuantity: true,
+  quantity: true,
   unit: true,
-  status: true,
-  forecast: true,
-  lastUpdated: true,
+  location: true,
+  expirationDate: true,
+  cost: true,
+  supplier: true,
+  barcode: true,
+  category: true,
+  notes: true,
   imageUrl: true,
 });
-
-// Ingredient source model
-export const ingredientSources = pgTable("ingredient_sources", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  address: text("address").notNull(),
-  city: text("city").notNull(),
-  country: text("country").notNull(),
-  latitude: decimal("latitude").notNull(),
-  longitude: decimal("longitude").notNull(),
-  type: text("type").notNull(), // hop farm, malt house, etc.
-  description: text("description"),
-  website: text("website"),
-  contactEmail: text("contact_email"),
-  contactPhone: text("contact_phone"),
-  image: text("image"), // URL to image
-  suppliedIngredients: json("supplied_ingredients"), // Array of ingredients supplied
-});
-
 export const insertIngredientSourceSchema = createInsertSchema(ingredientSources).pick({
   name: true,
-  address: true,
-  city: true,
-  country: true,
+  type: true,
+  supplier: true,
+  location: true,
+  contact: true,
+  rating: true,
+  notes: true,
   latitude: true,
   longitude: true,
-  type: true,
-  description: true,
-  website: true,
-  contactEmail: true,
-  contactPhone: true,
-  image: true,
-  suppliedIngredients: true,
 });
-
-// Equipment model
-export const equipment = pgTable("equipment", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  type: text("type").notNull(),
-  status: text("status").notNull(),
-  maintenanceStatus: text("maintenance_status"),
-  currentBatch: text("current_batch"),
-  timeRemaining: text("time_remaining"),
-  utilization: integer("utilization"),
-});
-
 export const insertEquipmentSchema = createInsertSchema(equipment).pick({
   name: true,
   type: true,
+  capacity: true,
   status: true,
-  maintenanceStatus: true,
-  currentBatch: true,
-  timeRemaining: true,
-  utilization: true,
+  location: true,
+  purchaseDate: true,
+  lastMaintenance: true,
+  nextMaintenance: true,
+  notes: true,
+  imageUrl: true,
 });
-
-// Recipe model
-export const recipes = pgTable("recipes", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  type: text("type").notNull(),
-  batchSize: decimal("batch_size").notNull(),
-  unitOfMeasure: text("unit_of_measure").notNull(),
-  originalGravity: decimal("original_gravity").notNull(),
-  finalGravity: decimal("final_gravity").notNull(),
-  abv: decimal("abv").notNull(),
-  ibu: integer("ibu").notNull(),
-  description: text("description").notNull(),
-  instructions: json("instructions").notNull(),
-  ingredients: json("ingredients").notNull(),
-  imageUrl: text("image_url"), // URL to recipe image or beauty shot
-  lastBrewed: timestamp("last_brewed"),
-  notes: text("notes"),
-});
-
 export const insertRecipeSchema = createInsertSchema(recipes).pick({
   name: true,
-  type: true,
+  style: true,
   batchSize: true,
-  unitOfMeasure: true,
-  originalGravity: true,
-  finalGravity: true,
-  abv: true,
-  ibu: true,
-  description: true,
-  instructions: true,
+  targetAbv: true,
+  targetIbu: true,
   ingredients: true,
-  imageUrl: true,
-  lastBrewed: true,
+  instructions: true,
+  fermentationTemp: true,
+  fermentationTime: true,
   notes: true,
+  imageUrl: true,
 });
-
-// Brewing schedule model
-export const brewingSchedules = pgTable("brewing_schedules", {
-  id: serial("id").primaryKey(),
-  recipeName: text("recipe_name").notNull(),
-  batchNumber: text("batch_number").notNull(),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  status: text("status").notNull(),
-  equipmentId: integer("equipment_id"),
-});
-
 export const insertBrewingScheduleSchema = createInsertSchema(brewingSchedules).pick({
-  recipeName: true,
-  batchNumber: true,
+  title: true,
+  description: true,
+  recipeId: true,
+  equipmentId: true,
   startDate: true,
   endDate: true,
   status: true,
-  equipmentId: true,
+  batchSize: true,
+  notes: true,
 });
-
-// Types
-export type InsertUser = z.infer<typeof insertUserSchema>;
-
-export type InventoryItem = typeof inventoryItems.$inferSelect;
-export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>;
-
-export type IngredientSource = typeof ingredientSources.$inferSelect;
-export type InsertIngredientSource = z.infer<typeof insertIngredientSourceSchema>;
-
-export type Equipment = typeof equipment.$inferSelect;
-export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
-
-export type Recipe = typeof recipes.$inferSelect;
-export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
-
-// Ingredient price history model
-export const ingredientPriceHistory = pgTable("ingredient_price_history", {
-  id: serial("id").primaryKey(),
-  ingredientId: integer("ingredient_id").notNull().references(() => inventoryItems.id),
-  date: timestamp("date").notNull(),
-  price: decimal("price").notNull(),
-  supplier: text("supplier"),
-  notes: text("notes"),
-});
-
 export const insertIngredientPriceHistorySchema = createInsertSchema(ingredientPriceHistory).pick({
   ingredientId: true,
-  date: true,
   price: true,
   supplier: true,
+  date: true,
   notes: true,
 });
 
+// Type exports
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
+export type Brewery = typeof breweries.$inferSelect;
+export type InsertBrewery = z.infer<typeof insertBrewerySchema>;
+export type InventoryItem = typeof inventoryItems.$inferSelect;
+export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>;
+export type IngredientSource = typeof ingredientSources.$inferSelect;
+export type InsertIngredientSource = z.infer<typeof insertIngredientSourceSchema>;
+export type Equipment = typeof equipment.$inferSelect;
+export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
+export type Recipe = typeof recipes.$inferSelect;
+export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
 export type BrewingSchedule = typeof brewingSchedules.$inferSelect;
 export type InsertBrewingSchedule = z.infer<typeof insertBrewingScheduleSchema>;
 export type IngredientPriceHistory = typeof ingredientPriceHistory.$inferSelect;

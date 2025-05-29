@@ -31,45 +31,7 @@ export class DatabaseStorage implements IStorage {
     this.initializeData();
   }
 
-  // New user authentication operations
-  async createUser(userData: any): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .returning();
-    return user;
-  }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
-  }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
-  }
-
-  // Brewery operations
-  async createBrewery(breweryData: any): Promise<Brewery> {
-    const [brewery] = await db
-      .insert(breweries)
-      .values(breweryData)
-      .returning();
-    return brewery;
-  }
-
-  async getBrewery(id: string): Promise<Brewery | undefined> {
-    const [brewery] = await db.select().from(breweries).where(eq(breweries.id, id));
-    return brewery;
-  }
-
-  async initializeBreweryData(breweryId: string): Promise<void> {
-    // Initialize sample data for the new brewery
-    // This creates initial inventory, equipment, and recipes
-    console.log(`Initializing data for brewery: ${breweryId}`);
-    // Add any initial brewery-specific data here
-  }
 
   // User operations
   async getUser(id: number): Promise<User | undefined> {
