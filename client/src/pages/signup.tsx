@@ -185,8 +185,8 @@ export default function SignupPage() {
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                   <div className="text-sm text-amber-800">
-                    <p className="font-medium mb-1">Your data is secure</p>
-                    <p>We use industry-standard encryption to protect your brewery information and will never share it with third parties.</p>
+                    <p className="font-medium mb-1">Development Application</p>
+                    <p>This is a demo brewery management system. For production use, ensure proper security audits and compliance measures are in place.</p>
                   </div>
                 </div>
               </div>
