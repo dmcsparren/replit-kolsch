@@ -50,6 +50,9 @@ export default function InventoryLevels() {
   };
   
   const getForecastBadge = (forecast: string) => {
+    if (!forecast) {
+      return <Badge variant="outline" className="bg-gray-100 text-gray-700 border-0">Unknown</Badge>;
+    }
     if (forecast === "Order soon") {
       return <Badge variant="outline" className="bg-red-100 text-red-700 border-0">{forecast}</Badge>;
     } else if (forecast.includes("weeks")) {

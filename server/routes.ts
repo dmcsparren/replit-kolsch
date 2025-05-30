@@ -5,6 +5,7 @@ import { z } from "zod";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { 
   insertInventoryItemSchema, 
   insertEquipmentSchema, 
@@ -17,8 +18,14 @@ import {
 export async function registerRoutes(app: Express): Promise<Server> {
   // prefix all routes with /api
   
-  // Setup session middleware
+  // Setup session middleware with PostgreSQL store
+  const pgStore = connectPg(session);
   app.use(session({
+    store: new pgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+      tableName: 'sessions'
+    }),
     secret: process.env.SESSION_SECRET || 'kolsch-brewery-secret-key',
     resave: false,
     saveUninitialized: false,
@@ -156,6 +163,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const session = req.session as any;
       session.userId = user.id;
       session.breweryId = user.breweryId;
+      
+      console.log("Login - Setting session userId:", user.id);
+      console.log("Login - Setting session breweryId:", user.breweryId);
+      
+      // Force session save
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            console.error("Session save error:", err);
+            reject(err);
+          } else {
+            console.log("Session saved successfully");
+            resolve(true);
+          }
+        });
+      });
 
       // Get brewery information
       const brewery = await storage.getBrewery(user.breweryId!);
