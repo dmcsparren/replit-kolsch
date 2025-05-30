@@ -186,8 +186,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (err) {
         console.error("Logout error:", err);
       }
+      res.clearCookie('connect.sid');
       res.redirect("/");
     });
+  });
+
+  // Force clear session endpoint
+  app.get("/api/clear-session", async (req: Request, res: Response) => {
+    try {
+      // Clear all possible session identifiers
+      res.clearCookie('connect.sid');
+      res.clearCookie('session');
+      res.clearCookie('sessionId');
+      
+      // Destroy session if it exists
+      if (req.session) {
+        const session = req.session as any;
+        session.destroy(() => {});
+      }
+      
+      // Send response that forces client-side redirect
+      res.send(`
+        <html>
+          <body>
+            <script>
+              localStorage.clear();
+              sessionStorage.clear();
+              window.location.href = '/';
+            </script>
+            <p>Clearing session... <a href="/">Click here if not redirected</a></p>
+          </body>
+        </html>
+      `);
+    } catch (error) {
+      console.error("Clear session error:", error);
+      res.redirect("/");
+    }
   });
   
   // Inventory routes
