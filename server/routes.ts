@@ -168,7 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Logout endpoint
+  // Logout endpoint (POST)
   app.post("/api/logout", async (req: Request, res: Response) => {
     const session = req.session as any;
     session.destroy((err: any) => {
@@ -176,6 +176,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ message: "Could not log out" });
       }
       res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  // Manual logout endpoint (GET) - for when users get stuck
+  app.get("/api/logout", async (req: Request, res: Response) => {
+    const session = req.session as any;
+    session.destroy((err: any) => {
+      if (err) {
+        console.error("Logout error:", err);
+      }
+      res.redirect("/");
     });
   });
   

@@ -84,7 +84,11 @@ export default function Header({ toggleSidebar }: HeaderProps) {
                 <p className="text-sm font-medium text-neutral-800">
                   {(user as any).firstName} {(user as any).lastName}
                 </p>
-                <p className="text-xs text-neutral-500">{(user as any).role || 'Member'}</p>
+                <p className="text-xs text-neutral-500">
+                  <a href="/api/logout" className="hover:text-amber-600 cursor-pointer">
+                    {(user as any).role || 'Member'} - Logout
+                  </a>
+                </p>
               </div>
             </div>
           )}
