@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { Bell, Menu, Search } from "lucide-react";
+import { Bell, Menu, Search, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMobile } from "@/hooks/use-mobile";
@@ -74,6 +74,16 @@ export default function Header({ toggleSidebar }: HeaderProps) {
             <span className="absolute top-1 right-1 h-3 w-3 rounded-full bg-accent"></span>
             <span className="sr-only">Notifications</span>
           </Button>
+
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => window.location.href = '/api/clear-session'}
+            className="text-neutral-600 hover:text-amber-600"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="sr-only">Logout</span>
+          </Button>
           
           {user && (
             <div className="flex items-center space-x-3">
@@ -84,11 +94,7 @@ export default function Header({ toggleSidebar }: HeaderProps) {
                 <p className="text-sm font-medium text-neutral-800">
                   {(user as any).firstName} {(user as any).lastName}
                 </p>
-                <p className="text-xs text-neutral-500">
-                  <a href="/api/logout" className="hover:text-amber-600 cursor-pointer">
-                    {(user as any).role || 'Member'} - Logout
-                  </a>
-                </p>
+                <p className="text-xs text-neutral-500">{(user as any).role || 'Member'}</p>
               </div>
             </div>
           )}
