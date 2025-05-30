@@ -62,7 +62,6 @@ export default function IngredientMapPage() {
   // Filter sources by active category
   const filteredSources = activeCategory 
     ? ingredientSources.filter((source) => 
-        (source.suppliedIngredients && source.suppliedIngredients.includes(activeCategory)) || 
         source.type === activeCategory
       )
     : ingredientSources;

@@ -159,9 +159,9 @@ export default function RecipesPage() {
   
   // Filter recipes based on search term
   const filteredRecipes = recipes?.filter(recipe => 
-    recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.type.toLowerCase().includes(searchTerm.toLowerCase())
+    recipe.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recipe.style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recipe.notes?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   // Define table columns
@@ -519,21 +519,17 @@ export default function RecipesPage() {
                 <h3 className="font-medium text-lg">{recipe.name}</h3>
                 <Badge
                   variant="outline"
-                  className={
-                    recipe.type === "Flagship"
-                      ? "bg-primary-light bg-opacity-20 text-primary border-0"
-                      : "bg-yellow-100 text-yellow-700 border-0"
-                  }
+                  className="bg-amber-100 text-amber-700 border-0"
                 >
-                  {recipe.type}
+                  {recipe.style}
                 </Badge>
               </div>
-              <p className="text-sm text-neutral-600 mb-4 line-clamp-2">{recipe.description}</p>
+              <p className="text-sm text-neutral-600 mb-4 line-clamp-2">{recipe.notes || 'No description available'}</p>
               <div className="flex items-center justify-between">
                 <div className="flex space-x-3 text-xs text-neutral-500">
-                  <span>ABV: {recipe.abv}%</span>
-                  <span>IBU: {recipe.ibu}</span>
-                  <span>SRM: {recipe.srm}</span>
+                  <span>ABV: {recipe.targetAbv || 'N/A'}%</span>
+                  <span>IBU: {recipe.targetIbu || 'N/A'}</span>
+                  <span>Batch: {recipe.batchSize}L</span>
                 </div>
                 <Button variant="ghost" size="sm">View Details</Button>
               </div>

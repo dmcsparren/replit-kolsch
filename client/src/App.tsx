@@ -31,7 +31,7 @@ function Router() {
 
   // Public routes that don't require authentication
   const publicRoutes = ['/', '/signup', '/login', '/landing'];
-  const isPublicRoute = publicRoutes.includes(location);
+  const isPublicRoute = location ? publicRoutes.includes(location) : false;
 
   useEffect(() => {
     // Only show auth error for private routes when user is definitely not authenticated
