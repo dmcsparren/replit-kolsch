@@ -68,20 +68,16 @@ export default function RecipeLibrary() {
                   <h4 className="font-medium text-neutral-800">{recipe.name}</h4>
                   <Badge
                     variant="outline"
-                    className={
-                      recipe.type === "Flagship"
-                        ? "bg-primary-light bg-opacity-20 text-primary border-0"
-                        : "bg-yellow-100 text-yellow-700 border-0"
-                    }
+                    className="bg-amber-100 text-amber-700 border-0"
                   >
-                    {recipe.type}
+                    {recipe.style}
                   </Badge>
                 </div>
-                <p className="text-sm text-neutral-500 mt-1 line-clamp-1">{recipe.description}</p>
+                <p className="text-sm text-neutral-500 mt-1 line-clamp-1">{recipe.notes || 'No description available'}</p>
                 <div className="flex items-center mt-2 text-xs space-x-4 text-neutral-500">
-                  <span>ABV: {recipe.abv}%</span>
-                  <span>IBU: {recipe.ibu}</span>
-                  <span>SRM: {recipe.srm}</span>
+                  <span>ABV: {recipe.targetAbv || 'N/A'}%</span>
+                  <span>IBU: {recipe.targetIbu || 'N/A'}</span>
+                  <span>Batch: {recipe.batchSize} L</span>
                 </div>
               </div>
             ))}

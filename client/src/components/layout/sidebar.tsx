@@ -12,7 +12,8 @@ import {
   Info, 
   X,
   Map,
-  TrendingUp
+  TrendingUp,
+  LogOut
 } from "lucide-react";
 
 type SidebarProps = {
@@ -103,6 +104,14 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
           <Settings2 className="h-5 w-5 mr-3" />
           Settings
         </Link>
+        
+        <button 
+          onClick={() => window.location.href = '/api/logout'}
+          className="flex items-center px-4 py-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-lg group transition-all w-full text-left"
+        >
+          <LogOut className="h-5 w-5 mr-3" />
+          Logout
+        </button>
       </nav>
       
       <div className="absolute bottom-0 w-full p-4 border-t border-sidebar-border">
