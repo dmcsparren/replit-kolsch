@@ -1,0 +1,132 @@
+index-D497Kuwe.js:507 Uncaught error: TypeError: Cannot read properties of undefined (reading 'includes')
+    at s (index-D497Kuwe.js:333:30341)
+    at index-D497Kuwe.js:333:33369
+    at Array.map (<anonymous>)
+    at Goe (index-D497Kuwe.js:333:32527)
+    at MP (index-D497Kuwe.js:38:17031)
+    at WC (index-D497Kuwe.js:40:3143)
+    at T9 (index-D497Kuwe.js:40:44880)
+    at A9 (index-D497Kuwe.js:40:39822)
+    at hne (index-D497Kuwe.js:40:39748)
+    at z1 (index-D497Kuwe.js:40:39598) {componentStack: '\n    at Goe (https://kolsch-brewer-dylanmcsparren.…app/assets/index-D497Kuwe.js:48:40392)\n    at fYe'}
+overrideMethod @ hook.js:608
+componentDidCatch @ index-D497Kuwe.js:507
+a.componentDidCatch.r.callback @ index-D497Kuwe.js:40
+JM @ index-D497Kuwe.js:38
+vD @ index-D497Kuwe.js:40
+b9 @ index-D497Kuwe.js:40
+cne @ index-D497Kuwe.js:40
+vne @ index-D497Kuwe.js:40
+Wu @ index-D497Kuwe.js:40
+yD @ index-D497Kuwe.js:40
+bu @ index-D497Kuwe.js:38
+(anonymous) @ index-D497Kuwe.js:40
+setTimeout
+i @ index-D497Kuwe.js:48
+o @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+As @ index-D497Kuwe.js:48
+setData @ index-D497Kuwe.js:48
+onSuccess @ index-D497Kuwe.js:48
+f @ index-D497Kuwe.js:48
+Promise.then
+m @ index-D497Kuwe.js:48
+start @ index-D497Kuwe.js:48
+fetch @ index-D497Kuwe.js:48
+gv @ index-D497Kuwe.js:48
+onSubscribe @ index-D497Kuwe.js:48
+subscribe @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+WB @ index-D497Kuwe.js:38
+Fw @ index-D497Kuwe.js:40
+pd @ index-D497Kuwe.js:40
+vne @ index-D497Kuwe.js:40
+Wu @ index-D497Kuwe.js:40
+yD @ index-D497Kuwe.js:40
+bu @ index-D497Kuwe.js:38
+(anonymous) @ index-D497Kuwe.js:40
+setTimeout
+i @ index-D497Kuwe.js:48
+o @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+As @ index-D497Kuwe.js:48
+setData @ index-D497Kuwe.js:48
+onSuccess @ index-D497Kuwe.js:48
+f @ index-D497Kuwe.js:48
+Promise.then
+m @ index-D497Kuwe.js:48
+start @ index-D497Kuwe.js:48
+fetch @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+refetchQueries @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+invalidateQueries @ index-D497Kuwe.js:48
+s @ index-D497Kuwe.js:507
+await in s
+Rte @ index-D497Kuwe.js:37
+jte @ index-D497Kuwe.js:37
+Lte @ index-D497Kuwe.js:37
+UM @ index-D497Kuwe.js:37
+TB @ index-D497Kuwe.js:37
+(anonymous) @ index-D497Kuwe.js:37
+BP @ index-D497Kuwe.js:40
+J7 @ index-D497Kuwe.js:37
+A2 @ index-D497Kuwe.js:37
+pP @ index-D497Kuwe.js:37
+Jte @ index-D497Kuwe.js:37Understand this error
+index-D497Kuwe.js:48 
+            
+            
+           GET https://kolsch-brewer-dylanmcsparren.replit.app/api/stats 500 (Internal Server Error)
+(anonymous) @ index-D497Kuwe.js:48
+a @ index-D497Kuwe.js:48
+m @ index-D497Kuwe.js:48
+start @ index-D497Kuwe.js:48
+fetch @ index-D497Kuwe.js:48
+gv @ index-D497Kuwe.js:48
+onSubscribe @ index-D497Kuwe.js:48
+subscribe @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+WB @ index-D497Kuwe.js:38
+Fw @ index-D497Kuwe.js:40
+pd @ index-D497Kuwe.js:40
+vne @ index-D497Kuwe.js:40
+Wu @ index-D497Kuwe.js:40
+yD @ index-D497Kuwe.js:40
+bu @ index-D497Kuwe.js:38
+(anonymous) @ index-D497Kuwe.js:40
+setTimeout
+i @ index-D497Kuwe.js:48
+o @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+As @ index-D497Kuwe.js:48
+setData @ index-D497Kuwe.js:48
+onSuccess @ index-D497Kuwe.js:48
+f @ index-D497Kuwe.js:48
+Promise.then
+m @ index-D497Kuwe.js:48
+start @ index-D497Kuwe.js:48
+fetch @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+refetchQueries @ index-D497Kuwe.js:48
+(anonymous) @ index-D497Kuwe.js:48
+batch @ index-D497Kuwe.js:48
+invalidateQueries @ index-D497Kuwe.js:48
+s @ index-D497Kuwe.js:507
+await in s
+Rte @ index-D497Kuwe.js:37
+jte @ index-D497Kuwe.js:37
+Lte @ index-D497Kuwe.js:37
+UM @ index-D497Kuwe.js:37
+TB @ index-D497Kuwe.js:37
+(anonymous) @ index-D497Kuwe.js:37
+BP @ index-D497Kuwe.js:40
+J7 @ index-D497Kuwe.js:37
+A2 @ index-D497Kuwe.js:37
+pP @ index-D497Kuwe.js:37
+Jte @ index-D497Kuwe.js:37Understand this error

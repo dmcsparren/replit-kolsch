@@ -597,18 +597,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const schedules = await storage.getAllBrewingSchedules();
       
       // Calculate the stats
-      const batchesInProcess = schedules.filter(s => s.status === "In progress").length;
+      const batchesInProcess = schedules.filter(s => s.status === "in_progress").length;
       const totalInventoryItems = inventoryItems.length;
       const lowStockItems = inventoryItems.filter(item => 
-        item.status === "critical" || item.status === "warning"
+        item.quantity < 10 // Simple low stock threshold
       ).length;
       
       const totalEquipment = equipmentItems.length;
       const activeEquipment = equipmentItems.filter(e => e.status === "active").length;
-      const equipmentUtilization = Math.floor((activeEquipment / totalEquipment) * 100);
-      const maintenanceNeeded = equipmentItems.filter(e => e.maintenanceStatus === "maintenance").length;
+      const equipmentUtilization = totalEquipment > 0 ? Math.floor((activeEquipment / totalEquipment) * 100) : 0;
+      const maintenanceNeeded = equipmentItems.filter(e => 
+        e.nextMaintenance && new Date(e.nextMaintenance) <= new Date()
+      ).length;
       
-      const scheduledBrews = schedules.filter(s => s.status === "Scheduled").length;
+      const scheduledBrews = schedules.filter(s => s.status === "scheduled").length;
       const thisWeekBrews = schedules.filter(s => {
         const scheduleDate = new Date(s.startDate);
         const today = new Date();

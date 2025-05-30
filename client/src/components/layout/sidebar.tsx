@@ -84,7 +84,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             href={item.path}
             className={cn(
               "flex items-center px-4 py-3 mt-2 rounded-lg group transition-all",
-              location === item.path 
+              location && location === item.path 
                 ? "bg-primary text-primary-foreground" 
                 : "text-sidebar-foreground hover:bg-sidebar-accent"
             )}

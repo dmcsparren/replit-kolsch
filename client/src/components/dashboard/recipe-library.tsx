@@ -18,9 +18,9 @@ export default function RecipeLibrary() {
   
   // Filter recipes based on search term
   const filteredRecipes = recipes?.filter(recipe => 
-    recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.type.toLowerCase().includes(searchTerm.toLowerCase())
+    recipe.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recipe.style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recipe.notes?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   return (
