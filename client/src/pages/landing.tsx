@@ -69,7 +69,7 @@ export default function LandingPage() {
           <div className="flex items-center space-x-4">
             <Button 
               variant="outline" 
-              onClick={() => window.location.href = "/api/login"}
+              onClick={() => window.location.href = "/login"}
             >
               Log In
             </Button>
