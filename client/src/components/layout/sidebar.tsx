@@ -106,7 +106,16 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
         </Link>
         
         <button 
-          onClick={() => window.location.href = '/api/logout'}
+          onClick={async () => {
+            try {
+              const response = await fetch('/api/logout', { method: 'POST' });
+              if (response.ok) {
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Logout failed:', error);
+            }
+          }}
           className="flex items-center px-4 py-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-lg group transition-all w-full text-left"
         >
           <LogOut className="h-5 w-5 mr-3" />
@@ -114,15 +123,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
         </button>
       </nav>
       
-      <div className="absolute bottom-0 w-full p-4 border-t border-sidebar-border">
-        <div className="flex items-center space-x-3">
-          <div className="h-8 w-8 rounded-full bg-amber-700 flex items-center justify-center text-white text-sm font-bold">SB</div>
-          <div>
-            <p className="text-sm font-medium text-sidebar-foreground">Sam Brewer</p>
-            <p className="text-xs text-neutral-400">Brewmaster</p>
-          </div>
-        </div>
-      </div>
+
     </aside>
   );
 }

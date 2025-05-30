@@ -3,6 +3,7 @@ import { Bell, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/hooks/useAuth";
 
 type HeaderProps = {
   toggleSidebar: () => void;
@@ -11,6 +12,7 @@ type HeaderProps = {
 export default function Header({ toggleSidebar }: HeaderProps) {
   const [location] = useLocation();
   const isMobile = useMobile();
+  const { user } = useAuth();
   
   // Get page title from location
   const getPageTitle = () => {
@@ -72,6 +74,20 @@ export default function Header({ toggleSidebar }: HeaderProps) {
             <span className="absolute top-1 right-1 h-3 w-3 rounded-full bg-accent"></span>
             <span className="sr-only">Notifications</span>
           </Button>
+          
+          {user && (
+            <div className="flex items-center space-x-3">
+              <div className="h-8 w-8 rounded-full bg-amber-700 flex items-center justify-center text-white text-sm font-bold">
+                {(user as any).firstName?.[0] || 'U'}{(user as any).lastName?.[0] || ''}
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm font-medium text-neutral-800">
+                  {(user as any).firstName} {(user as any).lastName}
+                </p>
+                <p className="text-xs text-neutral-500">{(user as any).role || 'Member'}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
