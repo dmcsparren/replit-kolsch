@@ -105,7 +105,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role || 'owner',
       });
 
-      // Brewery account created successfully
+      // Brewery account created successfully - now log them in automatically
+      const session = req.session as any;
+      session.userId = newUser.id;
+      session.breweryId = newBrewery.id;
 
       res.json({ 
         message: "Account created successfully",

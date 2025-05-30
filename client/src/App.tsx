@@ -30,18 +30,19 @@ function Router() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/signup', '/login'];
+  const publicRoutes = ['/', '/signup', '/login', '/landing'];
   const isPublicRoute = publicRoutes.includes(location);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && !isPublicRoute) {
+    // Only show auth error for private routes when user is definitely not authenticated
+    if (!isLoading && !isAuthenticated && !isPublicRoute && location !== '/') {
       toast({
         title: "Authentication Required",
         description: "Please log in to access this page.",
         variant: "destructive",
       });
     }
-  }, [isLoading, isAuthenticated, isPublicRoute, toast]);
+  }, [isLoading, isAuthenticated, isPublicRoute, toast, location]);
 
   // Show loading spinner while checking auth
   if (isLoading) {

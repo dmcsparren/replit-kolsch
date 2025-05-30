@@ -105,8 +105,8 @@ export default function SignupPage() {
         description: "Your brewery account has been created successfully.",
       });
       
-      // Redirect to dashboard
-      navigate("/dashboard");
+      // Redirect to root - authentication flow will handle routing
+      navigate("/");
     } catch (error: any) {
       toast({
         title: "Error",
