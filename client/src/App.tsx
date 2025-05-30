@@ -24,15 +24,43 @@ import { useToast } from "@/hooks/use-toast";
 import ErrorBoundary from "@/components/error-boundary";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user, isLoading, isAuthenticated } = useAuth();
   const [location] = useLocation();
-  
+  const { toast } = useToast();
+
+  // Public routes that don't require authentication
+  const publicRoutes = ['/', '/signup', '/login'];
+  const isPublicRoute = publicRoutes.includes(location);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !isPublicRoute) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access this page.",
+        variant: "destructive",
+      });
+    }
+  }, [isLoading, isAuthenticated, isPublicRoute, toast]);
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   // Check if we're on the landing page
   const isLandingPage = location === "/" || location === "/landing";
-  
+
   // Show landing page for unauthenticated users or when on landing page
-  if (isLoading || !isAuthenticated || isLandingPage) {
+  if (!isAuthenticated || isLandingPage) {
     return (
       <Switch>
         <Route path="/" component={LandingPage} />
@@ -42,15 +70,15 @@ function Router() {
       </Switch>
     );
   }
-  
+
   // Show the app layout for all other routes
   return (
     <div className="flex h-screen bg-neutral-100 overflow-hidden">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 scroll-container">
           <Switch>
             <Route path="/dashboard" component={Dashboard} />
