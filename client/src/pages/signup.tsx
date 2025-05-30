@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Grape } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -95,6 +96,9 @@ export default function SignupPage() {
       }
 
       const result = await response.json();
+      
+      // Invalidate the auth query to refresh user state
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       
       toast({
         title: "Welcome to kolsch!",
