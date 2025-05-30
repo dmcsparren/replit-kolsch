@@ -88,13 +88,13 @@ export default function Header({ toggleSidebar }: HeaderProps) {
           {user && (
             <div className="flex items-center space-x-3">
               <div className="h-8 w-8 rounded-full bg-amber-700 flex items-center justify-center text-white text-sm font-bold">
-                {(user as any).firstName?.[0] || 'U'}{(user as any).lastName?.[0] || ''}
+                {(user as any)?.user?.firstName?.[0] || (user as any)?.firstName?.[0] || 'U'}{(user as any)?.user?.lastName?.[0] || (user as any)?.lastName?.[0] || ''}
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-medium text-neutral-800">
-                  {(user as any).firstName} {(user as any).lastName}
+                  {(user as any)?.user?.firstName || (user as any)?.firstName || 'User'} {(user as any)?.user?.lastName || (user as any)?.lastName || ''}
                 </p>
-                <p className="text-xs text-neutral-500">{(user as any).role || 'Member'}</p>
+                <p className="text-xs text-neutral-500">{(user as any)?.user?.role || (user as any)?.role || 'Member'}</p>
               </div>
             </div>
           )}

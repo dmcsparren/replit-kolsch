@@ -32,12 +32,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication status endpoint
   app.get("/api/auth/user", async (req: Request, res: Response) => {
     const session = req.session as any;
+    console.log("Auth check - Session data:", session);
+    console.log("Auth check - User ID:", session?.userId);
+    
     if (session.userId) {
       try {
         const user = await storage.getUser(session.userId);
+        console.log("Auth check - Found user:", user ? "Yes" : "No");
         if (user) {
           const brewery = await storage.getBrewery(user.breweryId!);
-          res.json({
+          const responseData = {
             user: {
               id: user.id,
               username: user.username,
@@ -48,13 +52,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
               breweryId: user.breweryId
             },
             brewery
-          });
+          };
+          console.log("Auth check - Sending response:", responseData);
+          res.json(responseData);
           return;
         }
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     }
+    console.log("Auth check - No valid session, returning null");
     res.json(null);
   });
   
@@ -148,6 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create session
       const session = req.session as any;
       session.userId = user.id;
+      session.breweryId = user.breweryId;
 
       // Get brewery information
       const brewery = await storage.getBrewery(user.breweryId!);
