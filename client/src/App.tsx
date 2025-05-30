@@ -27,6 +27,7 @@ function Router() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const [location] = useLocation();
   const { toast } = useToast();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Public routes that don't require authentication
   const publicRoutes = ['/', '/signup', '/login'];
@@ -53,8 +54,6 @@ function Router() {
       </div>
     );
   }
-
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Check if we're on the landing page
   const isLandingPage = location === "/" || location === "/landing";
