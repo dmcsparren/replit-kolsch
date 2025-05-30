@@ -13,6 +13,7 @@ import Recipes from "@/pages/recipes";
 import Reports from "@/pages/reports";
 import IngredientMap from "@/pages/ingredient-map";
 import PriceTrends from "@/pages/price-trends";
+import BrewingProcess from "@/pages/brewing-process";
 import LandingPage from "@/pages/landing";
 import SignupPage from "@/pages/signup";
 import LoginPage from "@/pages/login";
@@ -61,6 +62,7 @@ function Router() {
             <Route path="/recipes" component={Recipes} />
             <Route path="/reports" component={Reports} />
             <Route path="/price-trends" component={PriceTrends} />
+            <Route path="/brewing-process" component={BrewingProcess} />
             <Route component={NotFound} />
           </Switch>
         </main>
